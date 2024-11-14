@@ -91,7 +91,7 @@ DLJPS
                 $result = get_user_topbar($pdo, $_SESSION['user_id']);
                 $cartcount = get_cart_count($pdo, $_SESSION['user_id']);
                 $wishcount = get_wishlist_count($pdo, $_SESSION['user_id']);
-
+                $addressResult = get_user_address($pdo, $_SESSION['user_id'])
                 ?>
                
 
@@ -135,15 +135,46 @@ DLJPS
 
 
     <div class="for-adress-and-payment border">
-        <div class="container pt-2">
+        
+        <div class="container d-flex pt-2">
+            <div class="for-each-in-ap border">
+                <h5>Account</h5>
+                <div>
+                <p class="ml-5">
+                    <?php echo $result['email'] ?>
+                    <span style="float: right;">
+                        <a class="textdeco mr-3" href="includes/logout.inc.php"><u>Logout</u></a>
+                    </span>
+                </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container d-flex pt-2">
+            <div class="for-each-in-ap border">
+                <h5>Ship to</h5>
+                <div>
+                    <p class="ml-5">
+                        <?php echo $result['email'] ?>
+                        <span style="float: right;">
+                            <a class="textdeco mr-3" href="includes/logout.inc.php"><u>Logout</u></a>
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div> 
+
+        <div class="container pt-2 mb-5">
         <div class="for-each-in-ap border"></div>
         </div>   
-        <div class="container pt-2">
-        <div class="for-each-in-ap border"></div>
-        </div>   
-        <div class="container pt-2">
-        <div class="for-each-in-ap border"></div>
-        </div>   
+
+        <div class="container pt-2 mb-1">
+        <div class="for-each-in-payment border"></div>
+        </div>
+        
+        <div class="container pt-2 ">
+        <div class="for-each-in-payment border"></div>
+        </div>  
         
 
     </div>

@@ -18,10 +18,10 @@
 
 
     }
-
+    include_once 'includes/login_model.inc.php';
     include('includes/topbar.php');
-
-   
+    $profileresult = get_user_topbar($pdo, $_SESSION['user_id']);
+    $addresscount = get_address_count($pdo, $_SESSION['user_id']);
 ?>
 
 <!-- Start Content Page -->
@@ -35,20 +35,22 @@
  <!-- Start Contact -->
  <div class="container py-5">
         <div class="row py-5">
-            <form class="col-md-9 m-auto" method="post" role="form" action="includes/sendContactMail.php">
+
                 <div class="row">
-                    <div class="form-group col-md-6 mb-3 border left">
+                    <div class="form-group col-md-6 mb-3  left">
                         <h3 class="">ORDER HISTORY</h3>
                         <p>
-                            sss
+                            
                         </p>
                     </div>
-                    <div class="form-group col-md-6 mb-3 right border">
+
+                    <div class="form-group col-md-6 mb-3 right ">
                         <h3 class="">Acount Details</h3>
                         <p>  
-                            sss
+                            <span class="mr-5 pr-5">  <?php echo $profileresult["username"] ?> </span> <br>
+                            <span class="mr-n1"> <?php echo $profileresult["email"] ?> </span>
                         </p>
-                        <a href="adressPage.php" class="textdeco"> View Addresses ( )</a>
+                        <a href="adressPage.php" class="textdeco mr-n2"> View Addresses ( <?php echo $addresscount['addresscount'] ?> )</a>
                     </div>
                 </div>
                 
