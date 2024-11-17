@@ -38,6 +38,8 @@
  
     $productResults = get_single_product($pdo, $prodid);
     $sizesResults = get_size($pdo);
+    $stockresult =  get_stocks($pdo, $_GET['prodid']);
+
     include_once 'includes/modal_product_single.php';
 
     
@@ -50,7 +52,7 @@
                 Swal.fire({
                     title: 'Error!',
                     text: '".implode(" ", $_SESSION["errors_wishlist"]) ."',
-                    icon: 'warning',
+                    icon: 'error',
                     confirmButtonText: 'OK'
                 });
             });
@@ -113,6 +115,18 @@
                                 <li class="list-inline-item">
                                     <p class="text-muted"><strong> <?php echo $product['color']; ?> </strong></p>
                                 </li>
+                                <li class="list-inline-item">
+                                    <span class="default-address" style="margin-top: 248px; margin-right: 50px;">
+                                    All Stocks: 
+                                    <span>
+                                        <?php 
+                                        echo !empty($stockresult['allstocks']) ? $stockresult['allstocks'] : ' No stock Available'; 
+                                        ?>
+                                    </span>
+                                </span>
+                                    
+                                </li>
+
                             </ul>
 
                             
@@ -149,9 +163,9 @@
 
                                                 <input type="hidden" name="product-quantity" id="product-quantity" value="1"> <!-- Default value -->
                                             </li>
-                                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minus">-</span></li>
-                                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
-                                            <li class="list-inline-item"><span class="btn btn-success" id="btn-plus">+</span></li>
+                                            <li class="list-inline-item"><span class="btn btn-success" id="btn-minuses">-</span></li>
+                                            <li class="list-inline-item"><span class="badge bg-secondary" id="var-values">1</span></li>
+                                            <li class="list-inline-item"><span class="btn btn-success" id="btn-pluses">+</span></li>
                                         </ul>
                                     </div>
 
@@ -258,119 +272,9 @@
                     </div>
                 </div>
 
-                <div class="p-2 pb-3">
-                    <div class="product-wap card rounded-0">
-                        <div class="card rounded-0">
-                            <img class="card-img rounded-0 img-fluid" src="assets/img/shop_09.jpg">
-                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                <ul class="list-unstyled">
-                                    <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <a href="shop-single.html" class="h3 text-decoration-none">White Shirt</a>
-                            <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                <li>M/L/X/XL</li>
-                                <li class="pt-2">
-                                    <span class="product-color-dot color-dot-red float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-blue float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-black float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-light float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-green float-left rounded-circle ml-1"></span>
-                                </li>
-                            </ul>
-                            <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                </li>
-                            </ul>
-                            <p class="text-center mb-0">$25.00</p>
-                        </div>
-                    </div>
-                </div>
+                
 
-                <div class="p-2 pb-3">
-                    <div class="product-wap card rounded-0">
-                        <div class="card rounded-0">
-                            <img class="card-img rounded-0 img-fluid" src="assets/img/shop_10.jpg">
-                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                <ul class="list-unstyled">
-                                    <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <a href="shop-single.html" class="h3 text-decoration-none">Oupidatat non</a>
-                            <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                <li>M/L/X/XL</li>
-                                <li class="pt-2">
-                                    <span class="product-color-dot color-dot-red float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-blue float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-black float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-light float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-green float-left rounded-circle ml-1"></span>
-                                </li>
-                            </ul>
-                            <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                </li>
-                            </ul>
-                            <p class="text-center mb-0">$45.00</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-2 pb-3">
-                    <div class="product-wap card rounded-0">
-                        <div class="card rounded-0">
-                            <img class="card-img rounded-0 img-fluid" src="assets/img/shop_11.jpg">
-                            <div class="card-img-overlay rounded-0 product-overlay d-flex align-items-center justify-content-center">
-                                <ul class="list-unstyled">
-                                    <li><a class="btn btn-success text-white" href="shop-single.html"><i class="far fa-heart"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="far fa-eye"></i></a></li>
-                                    <li><a class="btn btn-success text-white mt-2" href="shop-single.html"><i class="fas fa-cart-plus"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <a href="shop-single.html" class="h3 text-decoration-none">Black Fashion</a>
-                            <ul class="w-100 list-unstyled d-flex justify-content-between mb-0">
-                                <li>M/L/X/XL</li>
-                                <li class="pt-2">
-                                    <span class="product-color-dot color-dot-red float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-blue float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-black float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-light float-left rounded-circle ml-1"></span>
-                                    <span class="product-color-dot color-dot-green float-left rounded-circle ml-1"></span>
-                                </li>
-                            </ul>
-                            <ul class="list-unstyled d-flex justify-content-center mb-1">
-                                <li>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-warning fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                    <i class="text-muted fa fa-star"></i>
-                                </li>
-                            </ul>
-                            <p class="text-center mb-0">$60.00</p>
-                        </div>
-                    </div>
-                </div>
+                
 
                 
 
@@ -407,7 +311,7 @@
         Swal.fire({
             title: 'Warning!',
             text: '<?php echo implode(" ", $_SESSION["errors_product"]); ?>',
-            icon: 'warning',
+            icon: 'error',
             confirmButtonText: 'OK'
         });
     });
@@ -418,6 +322,128 @@
  
 </script>
 <?php  endif; ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+    // Listen for size button click
+    const sizeButtons = document.querySelectorAll('.btn-size');
+
+    sizeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Get the size ID and size name
+            const sizeId = this.getAttribute('data-size-id');
+            const size = this.getAttribute('data-size');
+
+            // Set the selected size in the hidden input fields
+            document.getElementById('selectedSize').value = size;
+            document.getElementById('selectedSizeId').value = sizeId;
+
+            // Send an AJAX request to get stock based on the selected size and product
+            getStockForSize(sizeId);
+        });
+    });
+
+    // Function to fetch stock data from the server
+    function getStockForSize(sizeId) {
+        // Get the product ID from the hidden input field
+        const productId = document.querySelector('input[name="product_id"]').value;
+
+        // Send AJAX request to get stock data for the selected size and product
+        fetch('includes/get_stock.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                product_id: productId,
+                size_id: sizeId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.stock !== undefined) {
+                // Update the stock display based on the response
+                updateStockDisplay(data.stock);
+                // Set the maximum quantity to the stock value
+                setMaxQuantity(data.stock);
+            } else {
+                console.error('Stock data not received or invalid response');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching stock:', error);
+        });
+    }
+
+    // Function to update the stock display
+    function updateStockDisplay(stock) {
+    // Hide the 'All Stocks' span
+    const allStocksSpan = document.querySelector('.default-address');
+    if (allStocksSpan) {
+        allStocksSpan.style.display = 'none';
+    }
+
+    // Display the stock or "Stocks unavailable"
+    const stockDisplay = document.querySelector('.default-address');
+    if (stockDisplay) {
+        if (!stock || stock === 0) { // Check if stock is false or 0
+            stockDisplay.innerHTML = "Stocks unavailable";
+        } else {
+            stockDisplay.innerHTML = `Stocks: <span>${stock}</span>`;
+        }
+        stockDisplay.style.display = 'block';
+    }
+}
+
+
+    // Declare the functions outside of setMaxQuantity so they can be reused
+    function increaseQuantity(stock, varValue, quantityInput) {
+        let currentValue = parseInt(varValue.innerHTML);
+        if (currentValue < stock) {
+            varValue.innerHTML = currentValue + 1;
+            quantityInput.value = currentValue + 1;
+        }
+    }
+
+    function decreaseQuantity(varValue, quantityInput) {
+        let currentValue = parseInt(varValue.innerHTML);
+        if (currentValue > 1) {
+            varValue.innerHTML = currentValue - 1;
+            quantityInput.value = currentValue - 1;
+        }
+    }
+
+    // Function to set the maximum quantity based on available stock
+    function setMaxQuantity(stock) {
+        const quantityInput = document.getElementById('product-quantity');
+        const btnPlus = document.getElementById('btn-pluses');
+        const btnMinus = document.getElementById('btn-minuses');
+        const varValue = document.getElementById('var-values');
+        
+        // Set the maximum quantity for the input field
+        quantityInput.max = stock;
+
+        // Reset the quantity to 1 on size selection
+        varValue.innerHTML = '1';
+        quantityInput.value = 1;
+
+        // Disable the "plus" button if no stock is available
+        btnPlus.disabled = stock === 0;
+
+        // Remove any existing click listeners before adding new ones
+        btnPlus.onclick = () => increaseQuantity(stock, varValue, quantityInput);
+        btnMinus.onclick = () => decreaseQuantity(varValue, quantityInput);
+    }
+
+
+
+
+    });
+</script>
+
+
+    
+
 
 <?php include('includes/footer.php'); ?>
 <?php 
@@ -431,7 +457,7 @@
          Swal.fire({
             title: 'Product is Already in Wishlist!!',
             text: 'Redirecting to wishlist page',
-            icon: 'warning', // Try different icons: 'success', 'error', 'warning', 'info', 'question'
+            icon: 'error', // Try different icons: 'success', 'error', 'warning', 'info', 'question'
             confirmButtonText: 'OK'
         });
 
@@ -487,4 +513,5 @@ if (isset($_GET['wishlist']) && $_GET['wishlist'] === 'success' && isset($_SESSI
             document.getElementById('sizeForm').submit();
         });
     });
+
 </script>

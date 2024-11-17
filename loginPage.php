@@ -6,13 +6,18 @@
         
         unset($_SESSION['pleaselogin']);
     }
+
+    if(isset($_SESSION['user_id'])){
+        $_SESSION['pleaselogin'] = "Please Log in First before seeing the shoes";
+        header("Location: index.php");
+
+    }
 ?>
 
 
 <?php
 
-    if (!isset($_SESSION['user_id'])){ ?>
-<?php
+
 include('includes/header.php');
 include('includes/topbar.php');
 ?>
@@ -25,8 +30,8 @@ include('includes/topbar.php');
     </div>
     <form action="includes/login.inc.php" method="POST" class="p-3 mt-4">
         <div class="form-field d-flex align-items-center">
-            <span class="far fa-user"></span>
-            <input type="text" name="username" id="username" placeholder="Username">
+            <span class="far fa-envelope"></span>
+            <input type="text" name="email" id="email" placeholder="Email">
         </div>
         <div class="form-field d-flex align-items-center">
             <span class="fas fa-key"></span>
@@ -40,15 +45,12 @@ include('includes/topbar.php');
     <div class="text-center fs-6 marginupLoginRegister">
         
     </div>
-</div>
 
-<?php
-    }else{
-        $_SESSION["already"] = "Already Logged In";
-       header("Location: index.php");
-       exit();
-    }
-    ?>
+    <div class="text-center fs-6 errorcenter mr-5">
+        <?php check_login_errors(); ?>
+    </div>
+</div>
+    
 
 
     

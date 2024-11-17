@@ -1,7 +1,8 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = $_POST["username"];
+    $firstname = $_POST["first_name"];
+    $lastname = $_POST["last_name"];
     $pwd = $_POST["pwd"];
     $cpwd = $_POST["cpwd"];
     $email = $_POST["email"];
@@ -17,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $errors = [];
 
-        if (is_input_empty($username, $pwd, $email, $num)) {
+        if (is_input_empty($firstname, $lastname, $pwd, $email, $num)) {
             $errors['emptyinput'] = "Empty Imput please Fill all fields";
         } 
         if(pwd_is_not_same($pwd, $cpwd)){
@@ -26,9 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if(is_valid_email($email)){
             $errors['invalidemail'] = "Invalid email please type valid email";
-        }
-        if(is_username_taken($pdo, $username)){
-            $errors['user_taken'] = "Username is already Taken!";
         }
 
         if(is_email_taken($pdo, $email)){
@@ -45,7 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
              $_SESSION["errors_signup"] = $errors;
 
             $signup_data = [
-                "username" => $username,
+                "first_name" => $firstname,
+                "last_name" => $lastname,
                 "email" => $email,
                 "num" => $num
             ];
@@ -55,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
              die();
         }
 
-        create_user( $pdo,  $username,  $pwd,  $email, $num);
+        create_user( $pdo,  $firstname, $lastname,  $pwd,  $email, $num);
 
         header("Location: ../registerPage.php?signup=Success");
 

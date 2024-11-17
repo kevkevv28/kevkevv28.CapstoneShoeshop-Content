@@ -84,6 +84,7 @@ main {
 
 /* Styles specifically for the login wrapper */
 .login1-wrapper {
+  width: 100%;
   max-width: 700px;
   min-height: 600px;
   margin: 80px auto;
@@ -1095,4 +1096,11 @@ input::-webkit-inner-spin-button {
   flex-direction: row;
   align-items: flex-end;
   gap: 10px;
+}
+
+.green {
+  color: green !important;
+}
+.red {
+  color: red !important;
 }

@@ -14,6 +14,48 @@
 
     }
 
+    if (isset($_SESSION['logout'])) {
+    $message = is_array($_SESSION['logout']) ? implode(" ", $_SESSION['logout']) : $_SESSION['logout'];
+
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: '". $message . "',
+                    text: '',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset($_SESSION['logout']);
+    }
+
+    if (isset($_SESSION['success_login'])) {
+    // Check if $_SESSION['success_login'] is an array
+    $message = is_array($_SESSION['success_login']) ? implode(" ", $_SESSION['success_login']) : $_SESSION['success_login'];
+    
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Success!',
+                    text: '" . $message . "',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+        ";
+
+        // Optionally clear the session variable after showing the message
+        unset($_SESSION['success_login']);
+    }
+
     include('includes/topbar.php');
 
    

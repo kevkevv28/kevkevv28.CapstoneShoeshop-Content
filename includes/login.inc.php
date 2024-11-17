@@ -1,7 +1,7 @@
 <?php
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = $_POST["username"];
+    $email = $_POST["email"];
     $pwd = $_POST["pwd"];
 
     try {
@@ -13,11 +13,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $errors = [];
 
-        if (is_input_empty($username, $pwd )) {
+        if (is_input_empty($email, $pwd )) {
             $errors['emptyinput'] = "Empty Imput please Fill all fields";
         }
 
-        $result = get_user($pdo, $username);
+        $result = get_user($pdo, $email);
 
         if (is_username_wrong($result)){
             $errors['login_incorrect'] = "Incorrect login info!";
@@ -42,10 +42,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         session_id($sessionId);
 
         $_SESSION["user_id"] = $result["id"];
-        $_SESSION["user_username"] = htmlspecialchars($result["username"]);
+        $_SESSION["user_email"] = htmlspecialchars($result["email"]);
 
         $_SESSION["last_regeneration"] = time();
 
+        $success = [];
+        
+        $success['login_success'] = "Login Successfully";
+        $_SESSION["success_login"] = $success;
+        
         
         header("Location: ../index.php?login=success");
         $pdo = null;

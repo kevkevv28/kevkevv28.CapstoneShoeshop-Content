@@ -27,8 +27,8 @@
     return $result;
  }
 
- function set_user(object $pdo, string $username, string $pwd, string $email, string $num){
-    $query = "INSERT INTO users (username, pwd, email, contact_num) VALUES (:username, :pwd, :email, :num);";
+ function set_user(object $pdo, string $firstname, string $lastname, string $pwd, string $email, string $num){
+    $query = "INSERT INTO users (first_name, last_name, pwd, email, contact_num) VALUES (:first_name,:last_name, :pwd, :email, :num);";
 
     $stmt = $pdo->prepare($query);
 
@@ -38,7 +38,8 @@
 
     $hashedpwd = password_hash($pwd, PASSWORD_BCRYPT, $options);
     
-    $stmt->bindParam(":username", $username);
+    $stmt->bindParam(":first_name", $firstname);
+    $stmt->bindParam(":last_name", $lastname);
     $stmt->bindParam(":pwd", $hashedpwd);
     $stmt->bindParam(":email", $email);
     $stmt->bindParam(":num", $num);

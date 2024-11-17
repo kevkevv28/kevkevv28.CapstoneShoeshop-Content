@@ -18,11 +18,16 @@ function check_login_errors(){
         echo "<br>";
 
         foreach ($errors as $error) {
-            echo '<p>' . $error . '</p>';
+            echo "<p class='errorsSignup' >" . $error . "</p>";
         }
 
         unset($_SESSION["errors_login"]);
     }else if(isset($_GET["login"]) && $_GET['login'] ==="success"){
-        echo '<p> Login Success!';
+        echo "<br>";
+        echo "<div class='alert alert-success alert-dismissible ml-5'>
+                  <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
+                  <h5><i class='icon fas fa-check'></i> Log In Successful!</h5>
+                  Redirecting to Login Page in <span id='countdown'>3</span> seconds.
+                </div>";
     }
 }

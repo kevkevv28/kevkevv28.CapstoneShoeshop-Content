@@ -113,6 +113,17 @@ function get_size(object $pdo){
     return $result;
 }
 
+function get_stocks(object $pdo,int $product_id){
+    $query = "SELECT SUM(shoes_stock) as allstocks FROM shoe_stocks where shoe_id = :product_id ";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result;
+}
+
 function get_user_wish(object $pdo ,string $user_id){
     $query = "SELECT * FROM users WHERE id = :user_id;";
 

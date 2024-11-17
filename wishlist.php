@@ -57,6 +57,26 @@
         unset($_SESSION['wishcart']);
     }
 
+    if (isset( $_SESSION['Unavailable'])) {
+        
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Unavailable Shoe!',
+                    text: '". $_SESSION['Unavailable']. "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset( $_SESSION['Unavailable']);
+    }
+
     include('includes/topbar.php');
     require_once 'includes/dbh.inc.php';
     include('includes/wishlist_model.inc.php');
@@ -87,12 +107,13 @@
                             
                             <th></th>
                             <th scope="col">Product</th>
-                            <th> Photo</th>
+                            <th > Photo</th>
                             <th > Size</th>
-                            <th scope="col">Price</th>
+                            <th scope="col" style="text-align: center;">Price</th>
                             <th style="display:none;"></th>
                             <th style="display:none;"></th>
                             <th style="display:none;"></th>
+                            <th style="text-align: center;"> </th>
                             
                         </tr>
                     </thead>
@@ -100,10 +121,14 @@
                 
                     <tbody>
                         <?php foreach ($Wishlistresult as $wishlist ){ ?>
+
+                            <?php $checkavailable = get_product_stock($pdo, $wishlist['product_id'], $wishlist['size']) ?> 
+
                         <tr>
                             <td>
                                 <input type="checkbox" name="shoeid[]"class="flat-red wishlist-checkbox" value="<?php echo htmlspecialchars($wishlist['product_id']); ?>">
                                 <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
+                                <input type="hidden" name="size" value="<?php echo htmlspecialchars($wishlist['size']); ?>">
                                 <button type="button" class="delwishbtn btn btn-danger marginleftmore marginbottom " ><i class="fa fa-trash" aria-hidden="true"></i></button> 
                             
                             </td>
@@ -123,14 +148,24 @@
                             </td>
 
                             <td> <span class="ml-3"> <?php echo $wishlist['size'] ?></span></td>
-                            <td>
+                            <td style="text-align: center;">
                                 <div class=''>
                                 <h5> ₱ <?php echo number_format($wishlist['price'],2) ?></h5>
                                 </div>
                             </td>
                             <td style="display:none;"> <?php echo htmlspecialchars($wishlist['userid']); ?></td>
                             <td  style="display:none;"> <?php echo htmlspecialchars($wishlist['product_id']); ?></td>
-                            <td style="display:none;"></td>
+                            <td style="display:none;"> </td>
+                            
+                            <td style="text-align: center;"> 
+                                
+                                <?php
+                                 if($checkavailable == "Unavailable") {
+                                echo "<h5 class='red'> Not Available </h5 >";
+                                }else{
+                                    echo "<h5 class='green'> Available </h4> ";
+                                } ?>  
+                            </td>
                             
                         </tr>
                         <?php } ?>

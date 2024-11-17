@@ -77,6 +77,27 @@
         unset($_SESSION['added']);
     }
 
+    if (isset($_SESSION['cart_error'])) {
+    // Check if $_SESSION['cart_error'] is an array
+    $message = is_array($_SESSION['cart_error']) ? implode(" ", $_SESSION['cart_error']) : $_SESSION['cart_error'];
+    
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Error!',
+                    text: '" . $message . "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+        ";
+
+        // Optionally clear the session variable after showing the message
+        unset($_SESSION['cart_error']);
+    }
+
     include('includes/topbar.php');
     require_once 'includes/dbh.inc.php';
     include('includes/cart_model.inc.php');
@@ -98,7 +119,7 @@
             </div>
         </div>
         <br>
-    <form action="checkout.php" method="POST">
+    <form action="includes/cart.inc.php" method="POST">
         <div class="cart_inner">
             <div class="table-responsive">
                 <table id="cart_tble" class="table">
@@ -113,6 +134,7 @@
                             <th scope="col">Price</th>
                             <th style="display:none;"></th>
                             <th style="display:none;"></th>
+                            <th style="display:none;"></th>
                             
                         </tr>
                     </thead>
@@ -125,10 +147,11 @@
                                 <!-- Checkbox to select the shoe -->
                                 <input type="checkbox" name="shoeid[]" class="flat-red wishlist-checkbox" value="<?php echo htmlspecialchars($wishlist['product_id']); ?>">
                                <!-- Hidden inputs to store additional details if this item is checked -->
-                                <input type="text" name="shoe_id[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['product_id']); ?>">
-                                <input type="text" name="size[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['size']); ?>">
-                                <input type="text" name="quantity[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['quantity_cart']); ?>">
-                                <input type="text" name="userid" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
+                                <input type="hidden" name="shoe_id[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['product_id']); ?>">
+                                <input type="hidden" name="size[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['size']); ?>">
+                                <input type="hidden" name="quantity[<?php echo $wishlist['product_id']; ?>]" value="<?php echo htmlspecialchars($wishlist['quantity_cart']); ?>">
+                                <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
+                                 
                                 <button type="button" class="delcartbtn btn btn-danger marginleftmore marginbottom " ><i class="fa fa-trash" aria-hidden="true"></i></button> 
                             
                             </td>
@@ -148,14 +171,24 @@
                             </td>
 
                             <td > <span class="ml-3"> <?php echo $wishlist['size'] ?></span> </td>
+
                             <td style="text-align: center;">
                                 <div class="product_count mt-4">
-                                    <input type="text" name="qty[]" id="sst_<?php echo $wishlist['product_id']; ?>" maxlength="12" value="<?php echo $wishlist['quantity_cart']; ?>" title="Quantity:" class="input-text qty" onchange="update_cart_qty(<?php echo $wishlist['product_id']; ?>, <?php echo $wishlist['user_id']; ?>)">
+                                    <input type="text" name="qty[]" id="sst_<?php echo $wishlist['product_id']; ?>" maxlength="12" value="<?php echo $wishlist['quantity_cart']; ?>" title="Quantity:" class="input-text qty" onchange="update_cart_qty(<?php echo $wishlist['product_id']; ?>, <?php echo $wishlist['user_id']; ?>, <?php echo $wishlist['size']; ?>)">
                                     
                                     <div class="arrowsbtn">
-                                        <!-- Updated the buttons to call the new functions -->
-                                        <button  class="increase increaseqty items-count arrowup  border " type="button"><i class="fas fa-chevron-up"></i></button>
-                                        <button  class="reduced reducedqty items-count arrowdown border" type="button"><i class="fas fa-chevron-down"></i></button>
+                                        <button class="increase increaseqty items-count arrowup border" 
+                                            type="button" 
+                                            data-product-id="<?php echo $wishlist['product_id']; ?>" 
+                                            data-size-id="<?php echo $wishlist['size_id']; ?>"> 
+                                            <i class="fas fa-chevron-up"></i>
+                                        </button>
+                                        <button class="reduced reducedqty items-count arrowdown border" 
+                                            type="button" 
+                                            data-product-id="<?php echo $wishlist['product_id']; ?>"
+                                            data-size-id="<?php echo $wishlist['size_id']; ?>">
+                                            <i class="fas fa-chevron-down"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </td>
@@ -169,6 +202,7 @@
                             
                             <td style="display:none;"> <?php echo htmlspecialchars($wishlist['user_id']); ?></td>
                             <td  style="display:none;"> <?php echo htmlspecialchars($wishlist['product_id']); ?></td>
+                            <td  style="display:none;"> <?php echo htmlspecialchars($wishlist['size']); ?></td>
                             
                             
                         </tr>
@@ -218,6 +252,12 @@
 
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    
+    
+});
 
+</script>
 
 <?php include('includes/footer.php'); ?>

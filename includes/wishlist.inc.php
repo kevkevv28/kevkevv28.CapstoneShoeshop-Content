@@ -101,15 +101,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
    
     $productids = $_POST["shoeid"];
     $userid = $_POST["userid"];
+    $size = $_POST["size"];
 
+
+    
     try {
         require_once 'dbh.inc.php';
         require_once 'wishlist_model.inc.php';
         require_once 'wishlist_contrl.inc.php';
         include_once 'config_session.inc.php';
         
+        $checkavailable = get_product_stock($pdo, $productids, $size);
         $errors = [];
-
+        if($checkavailable == 'Unavailable'){
+            $_SESSION['Unavailable'] = "Shoes is still not available";
+             header("Location: ../wishlist.php");
+            die();
+        }
         if (empty($productids)) {
             $errors['noshoes'] = "No shoes Selected";
         } 
@@ -128,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
             die();
         }
        
-       wishlist_to_cart( $pdo,  $productids, $userid);
+       wishlist_to_cart( $pdo,  $productids, $userid, $size);
         $success = [];
         
         $success['wishlist_cart'] = "Wishlist products Added to cart";

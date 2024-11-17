@@ -20,7 +20,7 @@
         Already a member? <a class="marginleftalittle" href="loginPage.php">Login</a>
     </div>
 
-    <div class="text-center fs-6 errorcenter">
+    <div class="text-center fs-6 errorcenter mr-5">
         <?php check_signup_errors(); ?>
     </div>
     

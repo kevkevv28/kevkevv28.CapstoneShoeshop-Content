@@ -75,6 +75,22 @@
         }, 1000); // Countdown every second
     });
 
+    document.addEventListener("DOMContentLoaded", function () {
+        var countdownloginElement = document.getElementById("countdownlogin");
+        var timeLeft = 3;
+
+        var countdownInterval = setInterval(function () {
+            timeLeft--;
+            countdownloginElement.innerHTML = timeLeft;
+
+            // When time reaches 0, redirect to login page
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = "index.php"; // Redirect to login page
+            }
+        }, 1000); // Countdown every second
+    });
+
 /* to hide Already login alert */
 
   // Set a timeout to hide and remove the alert after 3 seconds
@@ -92,34 +108,7 @@
     }
 }, 3000);
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    const varValue = document.getElementById('var-value');
-    const quantityInput = document.getElementById('product-quantity');
-
-    // Initialize quantity from the current value of the input field
-    let quantity = parseInt(quantityInput.value, 10) || 1;
-
-    // Ensure initial display value matches the input field
-    varValue.textContent = quantity;
-
-    document.getElementById('btn-minus').addEventListener('click', function () {
-        if (quantity > 1) {
-            quantity--;  // Decrement quantity
-            varValue.textContent = quantity;  // Update displayed value
-            quantityInput.value = quantity;   // Update input field value
-        }
-    });
-
-    document.getElementById('btn-plus').addEventListener('click', function () {
-        quantity++;  // Increment quantity
-        varValue.textContent = quantity;  // Update displayed value
-        quantityInput.value = quantity;   // Update input field value
-    });
-});
-
-
-
+   
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -198,7 +187,7 @@ $(document).ready(function() {
         // Use the correct indices based on your rowData array structure
         $('#del_userid').val(rowData[5]); // Replace 4 with the correct index
         $('#del_productid').val(rowData[6]); // Replace 5 with the correct index
-        
+        $('#del_size').val(rowData[7]);
         // Show the delete modal
         $('#delwishmodal').modal('show');
     });
@@ -214,7 +203,7 @@ $(document).ready(function() {
         "autoWidth": false, 
         "responsive": true,
         "columnDefs": [
-            { "targets": [6, 7], "visible": false }  
+            { "targets": [6, 7, 8], "visible": false }  
         ],
     }); // Initialize DataTable
 
@@ -248,9 +237,10 @@ $(document).ready(function() {
         // Use the correct indices based on your rowData array structure
         var useridcart = rowData[6];
         var productidcart = rowData[7];
+        var size = rowData[8];
         
          // Redirect to another PHP file (update_cart.php) with parameters
-         window.location.href = 'includes/cart.inc.php?action=increase&useridcart=' + useridcart + '&productidcart=' + productidcart;
+         window.location.href = 'includes/cart.inc.php?action=increase&useridcart=' + useridcart + '&productidcart=' + productidcart + '&size=' + size ;
        
     });
 
@@ -266,9 +256,10 @@ $(document).ready(function() {
         // Assuming rowData[6] is useridcart and rowData[7] is productidcart
         var useridcart = rowData[6];
         var productidcart = rowData[7];
+        var size = rowData[8];
 
         // Redirect to another PHP file (update_cart.php) with parameters
-        window.location.href = 'includes/cart.inc.php?action=decrease&useridcart=' + useridcart + '&productidcart=' + productidcart;
+        window.location.href = 'includes/cart.inc.php?action=decrease&useridcart=' + useridcart + '&productidcart=' + productidcart + '&size=' + size;
         
        
     });
@@ -287,14 +278,15 @@ function calculateTotalAndUpdate(productId, price) {
     }
 }
 
-function update_cart_qty(productId, userid) {
+function update_cart_qty(productId, userid, Shoesize) {
     var qty = document.getElementById('sst_' + productId).value;
     var useridcart = userid;
     var productidcart = productId;
+    var size = Shoesize;
 
     if (!isNaN(qty) && qty > 0) {
         // Update the total price based on the current quantity
-        window.location.href = 'includes/cart.inc.php?action=updatecartqty&useridcart=' + useridcart + '&productidcart=' + productidcart + '&qty=' + qty;
+        window.location.href = 'includes/cart.inc.php?action=updatecartqty&useridcart=' + useridcart + '&productidcart=' + productidcart + '&qty=' + qty + '&size=' + size;
     } else {
         // If qty is invalid, fallback to the product's original price
         window.location.href = 'addToCardPage.php';

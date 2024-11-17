@@ -6,28 +6,33 @@ function signup_inputs(){
     
     
    
-    if (isset($_SESSION["signup_data"]["username"]) && !isset($_SESSION["errors_signup"]["user_taken"])){
+    if (isset($_SESSION["signup_data"]["first_name"])){
         echo '<div class="form-field d-flex align-items-center">
             <span class="far fa-user"></span>
-            <input type="text" name="username" id="username" placeholder="Username" value="'. $_SESSION["signup_data"]["username"] .'" >
+            <input type="text" name="first_name" id="first_name" placeholder="First name" value="'. $_SESSION["signup_data"]["first_name"] .'" >
         </div>';
-        unset($_SESSION["signup_data"]["username"]);
+        unset($_SESSION["signup_data"]["first_name"]);
     }else{
         echo '<div class="form-field d-flex align-items-center">
             <span class="far fa-user"></span>
-            <input type="text" name="username" id="username" placeholder="Username">
+            <input type="text" name="first_name" id="first_name" placeholder="First Name">
         </div>';
-        unset($_SESSION["signup_data"]["username"]);
+        unset($_SESSION["signup_data"]["first_name"]);
     }
 
-    echo '<div class="form-field d-flex align-items-center">
-            <span class="fas fa-key"></span>
-            <input type="password" name="pwd" id="pwd" placeholder="Password">
+    if (isset($_SESSION["signup_data"]["last_name"])){
+        echo '<div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="last_name" id="last_name" placeholder="Last Name" value="'. $_SESSION["signup_data"]["last_name"] .'" >
         </div>';
-    echo '<div class="form-field d-flex align-items-center">
-            <span class="fas fa-key"></span>
-            <input type="password" name="cpwd" id="cpwd" placeholder="Confirm Password">
+        unset($_SESSION["signup_data"]["last_name"]);
+    }else{
+        echo '<div class="form-field d-flex align-items-center">
+            <span class="far fa-user"></span>
+            <input type="text" name="last_name" id="last_name" placeholder="Last Name">
         </div>';
+        unset($_SESSION["signup_data"]["last_name"]);
+    }
 
     if (isset($_SESSION["signup_data"]["email"]) && !isset($_SESSION["errors_signup"]["email_taken"]) && !isset($_SESSION["errors_signup"]["invalidemail"])){
         echo '<div class="form-field d-flex align-items-center">
@@ -42,6 +47,17 @@ function signup_inputs(){
         </div>';
         unset($_SESSION["signup_data"]["email"]);
     }
+
+    echo '<div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="pwd" id="pwd" placeholder="Password">
+        </div>';
+    echo '<div class="form-field d-flex align-items-center">
+            <span class="fas fa-key"></span>
+            <input type="password" name="cpwd" id="cpwd" placeholder="Confirm Password">
+        </div>';
+
+    
 
     if (isset($_SESSION["signup_data"]["num"]) && !isset($_SESSION["errors_signup"]["numInvalid"])){
         echo '<div class="form-field d-flex align-items-center">
@@ -71,7 +87,7 @@ function signup_inputs(){
         unset($_SESSION["errors_signup"]);
     }else if (isset($_GET["signup"]) && $_GET["signup"] === 'Success' ){
         echo "<br>";
-        echo "<div class='alert alert-success alert-dismissible'>
+        echo "<div class='alert alert-success alert-dismissible ml-5'>
                   <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>
                   <h5><i class='icon fas fa-check'></i> Registration Successful!</h5>
                   Redirecting to Login Page in <span id='countdown'>3</span> seconds.

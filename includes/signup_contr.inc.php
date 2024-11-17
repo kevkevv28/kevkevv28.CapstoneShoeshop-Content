@@ -53,8 +53,8 @@
     }
  }
 
- function create_user(object $pdo, string $username, string $pwd, string $email, string $num){
-   set_user( $pdo,  $username,  $pwd,  $email, $num);
+ function create_user(object $pdo, string $firstname, string $lastname, string $pwd, string $email, string $num){
+   set_user( $pdo,  $firstname, $lastname,  $pwd,  $email, $num);
 
  }
 
