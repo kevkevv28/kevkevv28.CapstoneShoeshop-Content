@@ -38,6 +38,28 @@
         // Optionally clear the session variable after showing the message
         unset($_SESSION['cart']);
     }
+
+    if (isset( $_SESSION['no_shoes'])) {
+        
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Please select Shoes!',
+                    text: '". $_SESSION['no_shoes']. "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset( $_SESSION['no_shoes']);
+    }
+
+
     if (isset($_SESSION['wishcart'])) {
         
         echo "
@@ -234,7 +256,7 @@
                 <hr>
                 <div class="d-flex justify-content-end my-4">
                     <a class="gray_btn me-2" href="shop.php">Continue Shopping</a>
-                    <button type="submit" class="primary-btn addToCartBtn " name="checkout" >Check out</button>
+                    <button type="button" class="primary-btn addToCartBtn " name="checkout" >Check out</button>
                     
                     
                 </div>
@@ -255,6 +277,57 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
     
+        
+        // Select the checkout button
+        const checkoutButton = document.querySelector('.addToCartBtn');
+
+        // Add a click event listener to the checkout button
+        checkoutButton.addEventListener('click', function () {
+            // Get all the checked checkboxes
+            const checkedShoes = document.querySelectorAll('.wishlist-checkbox:checked');
+
+            // Create an array to store the selected shoe data
+            const selectedShoes = Array.from(checkedShoes).map(checkbox => {
+                const shoeId = checkbox.value;
+                const size = document.querySelector(`input[name="size[${shoeId}]"]`).value;
+                const quantity = document.querySelector(`input[name="quantity[${shoeId}]"]`).value;
+
+                return {
+                    shoe_id: shoeId,
+                    size: size,
+                    quantity: quantity
+                };
+            });
+
+            // Send the data to the checkout page using a POST request
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'checkout.php';
+
+            // Add a hidden input for the 'checkout' key
+            const checkoutInput = document.createElement('input');
+            checkoutInput.type = 'hidden';
+            checkoutInput.name = 'checkout';
+            checkoutInput.value = '1'; // Arbitrary value to signal the POST request
+            form.appendChild(checkoutInput);
+
+            selectedShoes.forEach((shoe) => {
+                // Use the shoe ID as the key for grouping details
+                Object.keys(shoe).forEach(key => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = `${key}[${shoe.shoe_id}]`;
+                    input.value = shoe[key];
+                    form.appendChild(input);
+                });
+            });
+
+            // Append the form to the body and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
+ 
+
     
 });
 

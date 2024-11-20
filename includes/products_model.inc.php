@@ -252,3 +252,30 @@ function add_to_cart(object $pdo, int $product_id, int $user_id, int $size, int 
     $stmt->execute();
 
 }
+
+function get_product_cart(object $pdo, int|array $product_id, int $userid){
+    if (is_array($product_id)) {
+        // Handle case when product_id is an array
+        $placeholders = implode(',', array_fill(0, count($product_id), '?'));
+        $query = "SELECT * FROM cart 
+                  WHERE product_id IN ($placeholders) AND user_id = ?";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(array_merge($product_id, [$userid]));
+    } else {
+        // Handle case when product_id is a single integer
+        $query = "SELECT * FROM cart 
+                  WHERE product_id = ? AND user_id = ?";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$product_id, $userid]);
+    }
+
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($result)) {
+        return False;
+    }
+
+    return $result;
+}

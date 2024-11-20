@@ -1,11 +1,35 @@
 <?php
+require_once 'includes/config_session.inc.php';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
+        $shoeData = [];
 
-    require_once 'includes/config_session.inc.php';
+        if (isset($_POST['shoe_id']) && is_array($_POST['shoe_id'])) {
+            foreach ($_POST['shoe_id'] as $shoeId => $value) {
+                $shoeData[] = [
+                    'shoe_id' => $shoeId,
+                    'size' => $_POST['size'][$shoeId] ?? '',
+                    'quantity' => $_POST['quantity'][$shoeId] ?? '',
+                ];
+            }
+        }
+
+       
+    }
+
+    if(empty($shoeData)){
+        $_SESSION['no_shoes'] = "No selected shoes";
+        header("Location: addToCardPage.php");
+        die();
+    }   
+
+    
+    
     if(!isset($_SESSION['user_id'])){
         $_SESSION['pleaselogin'] = "Please Log in First before seeing wishlist";
         header("Location: loginPage.php");
 
     }
+    
     include('includes/header.php');
 
     require_once 'includes/dbh.inc.php';
@@ -14,25 +38,12 @@
 
 
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
-        $selectedItems = $_POST['shoeid'] ?? [];
-        $shoeData = [];
-
-        foreach ($selectedItems as $shoeId) {
-            $shoeData[] = [
-                'shoe_id' => $_POST['shoe_id'][$shoeId],
-                'size' => $_POST['size'][$shoeId],
-                'quantity' => $_POST['quantity'][$shoeId],
-            ];
-        }
-
-        // Now you have an array of selected shoes with their details.
-        // You can use this data as needed (e.g., save to the database, process the order, etc.)
-
-        // Example output
-        #print_r($shoeData);
-    }
-    ?>
+    
+     ?>
+     <script
+            src="https://www.paypal.com/sdk/js?client-id=test&buyer-country=US&currency=USD&components=buttons&disable-funding=venmo,paylater,card"
+            data-sdk-integration-source="developer-studio"
+        ></script>
     <!-- Header --><nav class="navbar navbar-expand-lg navbar-light shadow">
     <div class="container-fluid d-flex justify-content-between align-items-center">
 
@@ -86,12 +97,13 @@ DLJPS
 
             }else{
                 
-                include_once 'includes/login_model.inc.php';
+                include_once 'includes/checkout_model.inc.php';
 
                 $result = get_user_topbar($pdo, $_SESSION['user_id']);
-                $cartcount = get_cart_count($pdo, $_SESSION['user_id']);
-                $wishcount = get_wishlist_count($pdo, $_SESSION['user_id']);
-                $addressResult = get_user_address_for_checkout($pdo, $_SESSION['user_id'])
+                
+                $addressResult = get_user_address_for_checkout($pdo, $_SESSION['user_id']);
+                
+                
                 ?>
                
 
@@ -131,13 +143,14 @@ DLJPS
 
 
 
-<div class="container-fluid d-flex p-0">
+<div class="container-fluid-checkout d-flex p-0">
 
 
     <div class="for-adress-and-payment border">
         
-        <div class="container d-flex pt-2">
-            <div class="for-each-in-ap border">
+        <div class="container d-flex pt-3 mb-5">
+            <div class="for-each-in-ap ">
+                <div class="checkout-card shadow-sm p-4">
                 <h5>Account</h5>
                 <div>
                 <p class="ml-5">
@@ -149,43 +162,153 @@ DLJPS
                 </div>
             </div>
         </div>
+        </div>
 
-        <div class="container d-flex pt-2">
-            <div class="for-each-in-ap border">
-                <h5>Ship to</h5>
-                <div>
+        <div class="container d-flex pt-2 mb-5">
+            <div class="for-each-in-ap mt-3">
+                <div class="checkout-card shadow-sm p-4">
+                <h5>Ship to <span class="default-address-checkout "> ( default address ) </span></h5>
+                <div>  
+                    <?php if (empty($addressResult)){?>
                     <p class="ml-5">
-
-                        <?php echo $addressResult['email'] ?>
+                        Address not Available <br>
+                        <a href="adressPage.php" class="textdeco ml-5 pl-5 ">* click here to Add an Address * </a>
                         
                     </p>
+
+                    <?php }else{?>
+                        <p class="ml-5 check_out_small_letter">
+                        
+                        <?php echo $result['first_name'] ." " . $result['last_name'] . " , ". $addressResult['address'] . " , " . $addressResult['zipcode'] .  $addressResult['mobile_no']?>
+                        <br>
+                        additional info:  <?php echo $addressResult['brgy_street'] ?>
+                        
+                        </p>
+                   <?php } ?>
                 </div>
+                    </div>
             </div>
         </div> 
 
-        <div class="container pt-2 mb-5">
-        <div class="for-each-in-ap border"></div>
-        </div>   
+        <div id="checkout-page">
+            <div class="container forcheck py-4 mt-3">
+                <div class="checkout-card shadow-sm p-4">
+                    <h5 class="mb-4  text-uppercase font-weight-bold">
+                        Payment
+                    </h5>
+                    <form method="POST" action="includes/checkout.inc.php">
+                        <div class="payment-option mb-3 d-flex align-items-center border rounded p-3">
+                            <input type="radio" id="cod" name="payment_method" value="COD" required class="custom-radio">
+                            <label for="cod" class="ml-3 d-flex flex-column w-100">
+                                <span class="font-weight-bold">
+                                    <i class="fa fa-money text-success mr-2"></i>
+                                    Cash on Delivery (COD)
+                                </span>
+                                <small class="text-muted">Pay directly to the courier upon delivery.</small>
+                            </label>
+                        </div>
+                        <div class="payment-option mb-3 d-flex align-items-center border rounded p-3">
+                            
+                            <input type="radio" id="paypal" name="payment_method" value="PayPal" class="custom-radio">
+                            <label for="paypal" class="ml-3 d-flex flex-column w-100">
+                                <span class="font-weight-bold">
+                                    <i class="fa fa-paypal text-primary mr-2"></i>
+                                    Secure Payment using PayPal
+                                </span>
+                                <small class="text-muted">Use your PayPal account for a fast and secure checkout.</small>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" id="payment-btn" class="btn btn-success btn-block mt-4">
+                            Proceed to Payment
+                        </button>
 
-        <div class="container pt-2 mb-1">
-        <div class="for-each-in-payment border"></div>
+                          <!-- PayPal button container, initially hidden -->
+                    <div id="paypal-button-container" style="display: none;">
+                        <!-- Add your PayPal button integration code here -->
+                    </div>
+
+                     <p id="result-message"></p>
+                    </form>
+                </div>
+            </div>
         </div>
-        
-        <div class="container pt-2 ">
-        <div class="for-each-in-payment border"></div>
-        </div>  
-        
-
     </div>
 
 
-    <div class="for-selected-product border">
-        
-        <div class="container pt-2">
-            <div class="for-each-product border"></div>
-        </div>  
 
+
+
+
+
+
+
+
+
+
+    <div class="for-selected-product " >
+        <div class="container py-3">
+
+            
+        <div class="checkout-cards shadow-sm p-4 " >
+                <h5 class="text-uppercase font-weight-bold mb-3">Selected Product</h5>
+                
+                
+
+                <?php 
+                $total = 0; // Initialize total amount
+
+                foreach ($shoeData as $shoe) { 
+                    
+                // Fetch the shoe details
+                $shoedetail = get_shoes_detail($pdo, $shoe['shoe_id']);
+                if (!$shoedetail) {
+                    // Handle unavailable product case
+                    echo "<p>Product not available.</p>";
+                    continue;
+                }
+
+                 // Calculate the price for this item (price * quantity)
+                $itemTotal = $shoedetail['price'] * $shoe['quantity'];
+                $total += $itemTotal; // Add to total
+                ?>
+                <div class="for-each-product mt-5">
+                    <!-- Example Product Item -->
+                    <div class="d-flex align-items-center border rounded p-3 mb-3">
+                        <img src="assets/shoesphotos/<?php echo htmlspecialchars($shoedetail['product_img_name']); ?>" 
+                            alt="Product Image" 
+                            class="img-fluid rounded" 
+                            style="width: 80px; height: 80px;">
+                        <div class="ml-3 w-100">
+                            <h6 class="mb-1 text-dark font-weight-bold">
+                                <?php echo htmlspecialchars($shoedetail['product_name']); ?>
+                            </h6>
+                            <p class="mb-1 text-muted small">
+                                Category: <?php echo htmlspecialchars($shoedetail['category']); ?>
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success font-weight-bold">
+                                    ₱<?php echo number_format(($shoedetail['price'] * $shoe['quantity']), 2); ?>
+                                </span>
+                                <span class="text-muted small">
+                                    Quantity: <?php echo htmlspecialchars($shoe['quantity']); ?>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+                
+
+                
+                <!-- Total -->
+                <div class="total-container">
+                    <p class="text-muted small">Total: <span class="text-success font-weight-bold">₱<?php echo number_format($total, 2); ?></span></p>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     
 </div>
@@ -314,6 +437,73 @@ DLJPS
             ]
         });
     </script>
+    
+    <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+    const codRadio = document.getElementById("cod");
+    const paypalRadio = document.getElementById("paypal");
+    const paymentButton = document.getElementById("payment-btn");
+    const paypalButtonContainer = document.getElementById("paypal-button-container");
+
+    if (!codRadio || !paypalRadio || !paymentButton || !paypalButtonContainer) {
+        console.error("One or more elements are missing in the DOM.");
+        return;
+    }
+
+    // Function to update button text with animation and toggle visibility
+    function updateButtonText(newText) {
+        // Add fade-out class
+        paymentButton.classList.add("fade-out-checkout");
+
+        // Wait for the fade-out animation to complete
+        setTimeout(() => {
+            // Change the button text
+            paymentButton.textContent = newText;
+
+            // Add fade-in class
+            paymentButton.classList.remove("fade-out-checkout");
+            paymentButton.classList.add("fade-in-checkout");
+
+            // Remove fade-in class after animation ends
+            setTimeout(() => {
+                paymentButton.classList.remove("fade-in-checkout");
+            }, 400);
+        }, 400);
+    }
+
+    // Function to toggle visibility between payment button and PayPal button container
+    function togglePaymentMethod() {
+        if (paypalRadio.checked) {
+            paymentButton.style.display = "none";  // Hide the payment button
+            paypalButtonContainer.style.display = "block";  // Show PayPal button container
+        } else {
+            paymentButton.style.display = "block";  // Show the payment button
+            paypalButtonContainer.style.display = "none";  // Hide PayPal button container
+        }
+    }
+
+    // Event listeners for radio buttons
+    codRadio.addEventListener("change", () => {
+        updateButtonText("Complete Order");
+        togglePaymentMethod();
+    });
+    paypalRadio.addEventListener("change", () => {
+        updateButtonText("Pay Now");
+        togglePaymentMethod();
+    });
+
+    // Initial call to set the default button text and visibility based on initial radio button state
+    updateButtonText(paymentButton.textContent);
+    togglePaymentMethod();
+});
+
+
+
+
+</script>
+ 
+        <script src="assets/js/app.js"></script>
     <!-- End Slider Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

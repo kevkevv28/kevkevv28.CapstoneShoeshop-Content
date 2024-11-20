@@ -47,8 +47,8 @@
                     <div class="form-group col-md-6 mb-3 right ">
                         <h3 class="">Acount Details</h3>
                         <p>  
-                            <span class="mr-5 pr-5">  <?php echo $profileresult["username"] ?> </span> <br>
-                            <span class="mr-n1"> <?php echo $profileresult["email"] ?> </span>
+                            <span class="mr-5 ">  <?php echo $profileresult["first_name"] . " " . $profileresult["last_name"] ?> </span> <br>
+                            <span class="mr-n4"> <?php echo $profileresult["email"] ?> </span>
                         </p>
                         <a href="adressPage.php" class="textdeco mr-n2"> View Addresses ( <?php echo $addresscount['addresscount'] ?> )</a>
                     </div>

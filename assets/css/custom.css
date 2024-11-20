@@ -224,6 +224,9 @@ footer.show {
 .radiuss {
   border-radius: 50px !important;
 }
+.checkout-radius {
+  border-radius: 30px !important;
+}
 
 .marginleftalittle {
   margin-left: 10px;
@@ -1039,6 +1042,10 @@ input::-webkit-inner-spin-button {
   background: whitesmoke;
 }
 
+.forcheck {
+  height: 100vh;
+}
+
 .for-each-in-ap {
   height: 79px;
   width: 60%;
@@ -1090,6 +1097,11 @@ input::-webkit-inner-spin-button {
   margin-right: 10px;
   margin-top: 70px;
 }
+
+.default-address-checkout {
+  font-size: 0.75rem; /* Smaller font size */
+  color: gray;
+}
 .button-group {
   position: relative;
   display: flex;
@@ -1103,4 +1115,188 @@ input::-webkit-inner-spin-button {
 }
 .red {
   color: red !important;
+}
+
+.check_out_small_letter {
+  font-size: smaller !important;
+}
+
+/* General Styles */
+#checkout-page {
+  display: flex;
+  margin-left: 38.7%;
+  height: 100%; /* Ensure it takes full height */
+  margin-top: auto; /* Allow alignment in the middle */
+  margin-bottom: auto;
+}
+
+#checkout-page {
+  background-color: #ffffff;
+  font-family: "Arial", sans-serif;
+  padding-bottom: 30px;
+}
+
+#checkout-page .checkout-card {
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  width: 100%;
+}
+
+/* Payment Option Styling */
+#checkout-page .payment-option {
+  display: flex;
+  align-items: center;
+  transition: border-color 0.3s, background-color 0.3s;
+  cursor: pointer;
+}
+
+#checkout-page .payment-option:hover {
+  border-color: #28a745;
+  background-color: #f9fdf9;
+}
+
+#checkout-page .custom-radio {
+  transform: scale(1.5);
+  margin-right: 15px;
+}
+
+#checkout-page .payment-option label {
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+/* Button Styles */
+#checkout-page .btn-success {
+  border-radius: 25px;
+  background-color: #28a745;
+  border: none;
+}
+
+#checkout-page .btn-success:hover {
+  background-color: #218838;
+}
+
+/* General Styles for Account and Ship To */
+.for-adress-and-payment .checkout-card {
+  border-radius: 8px; /* Rounded corners */
+  background: #ffffff; /* White background */
+  border: 1px solid #e0e0e0; /* Light gray border */
+  width: 100%; /* Full-width card */
+  padding: 20px; /* Internal spacing */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Consistent Heading Styling */
+.for-adress-and-payment h5 {
+  font-size: 1.2rem;
+  text-transform: uppercase; /* Capitalize headings */
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 1rem; /* Space below heading */
+  color: #333; /* Dark text */
+}
+
+/* Account Section */
+.for-adress-and-payment .account-card {
+  margin-bottom: 20px; /* Space between Account and Ship to */
+}
+
+/* Ship To Section */
+.for-adress-and-payment .ship-to-card {
+  margin-bottom: 20px; /* Space between Ship to and Payment */
+}
+
+/* Link Styling */
+.for-adress-and-payment a {
+  text-decoration: none; /* Remove underline */
+  color: #007bff; /* Primary blue link color */
+  font-weight: bold;
+}
+
+.for-adress-and-payment a:hover {
+  text-decoration: underline; /* Add underline on hover */
+}
+
+/* Text Styling */
+.for-adress-and-payment p {
+  font-size: 0.95rem; /* Slightly smaller text */
+  color: #555; /* Muted dark gray */
+}
+
+.for-adress-and-payment small {
+  font-size: 0.85rem; /* Smaller text for additional info */
+  color: #6c757d; /* Light gray */
+}
+/* Consistent Spacing Between Sections */
+.for-address-and-payment .container {
+  margin-bottom: 20px; /* Adds spacing between sections */
+}
+
+/* Add Icon for Section Titles (Optional) */
+.checkout-card h5 {
+  position: relative;
+  padding-left: 25px;
+}
+
+/* Outer container for Selected Product */
+.for-selected-product .checkout-cards {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Each Product Item Styling */
+.for-selected-product .for-each-product .border {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  transition: box-shadow 0.3s, border-color 0.3s;
+}
+
+.for-selected-product .for-each-product .border:hover {
+  border-color: #28a745;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Total Styling */
+.for-selected-product .total-container {
+  text-align: right;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 60px;
+}
+
+.container-fluid-checkout {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh; /* Ensures the container spans the full height */
+}
+
+.for-selected-product {
+  flex: 1; /* Takes remaining space */
+  overflow-y: auto; /* Allows scrolling */
+}
+
+.for-adress-and-payment {
+  flex: 1; /* Ensures equal space */
+   overflow-y: hidden; /* Prevents scroll */
+
+  box-sizing: border-box; /
+}
+
+/* Fade-out effect */
+.fade-out-checkout {
+    opacity: 0.5;
+    transition: opacity 3.1s ease-out;
+}
+
+/* Fade-in effect */
+.fade-in-checkout {
+    opacity: 1;
+    transition: opacity 3.5s ease-in;
 }

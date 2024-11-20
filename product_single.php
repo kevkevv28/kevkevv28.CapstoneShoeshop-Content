@@ -25,6 +25,26 @@
 
         
     }
+
+    if (isset( $_SESSION['Shoes_already'])) {
+        
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Shoes already in cart!',
+                    text: '". $_SESSION['Shoes_already']. "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset( $_SESSION['Shoes_already']);
+    }
     
 
     include('includes/topbar.php');
@@ -439,6 +459,23 @@
 
 
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+    // When the user clicks the "Add To Wishlist" button, trigger the modal
+    document.getElementById('wishlist-button').addEventListener('click', function () {
+        // Show the modal
+        var wishlistModal = new bootstrap.Modal(document.getElementById('wishlistModal'));
+        wishlistModal.show();
+    });
+
+    // When the user clicks the "Confirm" button inside the modal, submit the form
+    document.getElementById('confirm-add-wishlist').addEventListener('click', function () {
+        // Submit the form with the id 'wishlist-form'
+        document.getElementById('productsingle').submit();
+    });
+
+});
 </script>
 
 

@@ -111,7 +111,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
         require_once 'wishlist_contrl.inc.php';
         include_once 'config_session.inc.php';
         
+        $checkifadded = get_product_cart($pdo, $productids, $userid);
         $checkavailable = get_product_stock($pdo, $productids, $size);
+
         $errors = [];
         if($checkavailable == 'Unavailable'){
             $_SESSION['Unavailable'] = "Shoes is still not available";
@@ -124,6 +126,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
         if (empty($userid)) {
             $errors['nouser'] = "";
         } 
+
+        if($checkifadded){
+            $_SESSION['Shoes_already'] = "The shoe is already in your cart";
+             header("Location: ../wishlist.php");
+            die();
+        }
 
         
 

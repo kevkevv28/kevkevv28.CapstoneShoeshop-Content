@@ -76,6 +76,25 @@
         // Optionally clear the session variable after showing the message
         unset( $_SESSION['Unavailable']);
     }
+    if (isset( $_SESSION['Shoes_already'])) {
+        
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Shoes already in cart!',
+                    text: '". $_SESSION['Shoes_already']. "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset( $_SESSION['Shoes_already']);
+    }
 
     include('includes/topbar.php');
     require_once 'includes/dbh.inc.php';

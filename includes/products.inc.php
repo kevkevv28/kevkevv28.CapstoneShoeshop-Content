@@ -13,12 +13,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['addtocart'])) {
         require_once 'products_contrl.inc.php';
         include_once 'config_session.inc.php';
      
+        $checkifadded = get_product_cart($pdo, $productid, $usersid);
+
         $errors = [];
 
         if (empty($size)) {
             $errors['sizeNotSelected'] = "Product Size not Selected ";
         } 
 
+        if($checkifadded){
+            $_SESSION['Shoes_already'] = "The shoe is already in your cart";
+            header("Location: ../product_single.php?prodid=". $productid. "");
+            die();
+        }
         
 
         if ($errors) {

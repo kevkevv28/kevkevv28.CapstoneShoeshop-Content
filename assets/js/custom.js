@@ -59,37 +59,37 @@
 
     /* Timer for Registration Complete */
 
+    /* Timer for Registration Complete and Login Redirect */
     document.addEventListener("DOMContentLoaded", function () {
+        // Countdown for Registration Complete
         var countdownElement = document.getElementById("countdown");
-        var timeLeft = 3;
+        if (countdownElement) {
+            startCountdown(countdownElement, 3, "loginPage.php");
+        }
+
+        // Countdown for Login Redirect
+        var countdownLoginElement = document.getElementById("countdownlogin");
+        if (countdownLoginElement) {
+            startCountdown(countdownLoginElement, 3, "index.php");
+        }
+    });
+
+    /* Reusable Countdown Function */
+    function startCountdown(element, time, redirectUrl) {
+        var timeLeft = time;
 
         var countdownInterval = setInterval(function () {
             timeLeft--;
-            countdownElement.innerHTML = timeLeft;
+            element.innerHTML = timeLeft;
 
-            // When time reaches 0, redirect to login page
+            // When time reaches 0, redirect to specified page
             if (timeLeft <= 0) {
                 clearInterval(countdownInterval);
-                window.location.href = "loginPage.php"; // Redirect to login page
+                window.location.href = redirectUrl;
             }
         }, 1000); // Countdown every second
-    });
+    }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        var countdownloginElement = document.getElementById("countdownlogin");
-        var timeLeft = 3;
-
-        var countdownInterval = setInterval(function () {
-            timeLeft--;
-            countdownloginElement.innerHTML = timeLeft;
-
-            // When time reaches 0, redirect to login page
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                window.location.href = "index.php"; // Redirect to login page
-            }
-        }, 1000); // Countdown every second
-    });
 
 /* to hide Already login alert */
 
@@ -132,22 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function () {
 
-    // When the user clicks the "Add To Wishlist" button, trigger the modal
-    document.getElementById('wishlist-button').addEventListener('click', function () {
-        // Show the modal
-        var wishlistModal = new bootstrap.Modal(document.getElementById('wishlistModal'));
-        wishlistModal.show();
-    });
-
-    // When the user clicks the "Confirm" button inside the modal, submit the form
-    document.getElementById('confirm-add-wishlist').addEventListener('click', function () {
-        // Submit the form with the id 'wishlist-form'
-        document.getElementById('productsingle').submit();
-    });
-
-});
 
 $(document).ready(function() {
     $('#wishlist_tble').DataTable({
