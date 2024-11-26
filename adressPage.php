@@ -48,14 +48,14 @@
 
 <!-- Start Content Page -->
 <div class="container-fluid bg-light py-5">
-        <div class="col-md-6 m-auto text-center">
+        <div class="col-md-6 m-auto text-center ">
             <h1 class="h1">ADDRESS PAGE</h1>
             <button type="button" id="btnadd" class="btn btn- btnadress"> ADD ADDRESS </button>
         </div>
     </div>
 
  <!-- Start Contact -->
- <div class="container py-5">
+ <div class="container height py-5">
         <div class="row py-5">
 
                 <div class="row">

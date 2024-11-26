@@ -279,3 +279,32 @@ function get_product_cart(object $pdo, int|array $product_id, int $userid){
 
     return $result;
 }
+
+function get_product_stock(object $pdo, int|array $product_id, int $size) {
+    if (is_array($product_id)) {
+        // Handle case when product_id is an array
+        $placeholders = implode(',', array_fill(0, count($product_id), '?'));
+        $query = "SELECT * FROM shoe_stocks 
+                  INNER JOIN sizes ON shoe_stocks.size_id = sizes.id 
+                  WHERE shoe_id IN ($placeholders) AND size = ?";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(array_merge($product_id, [$size]));
+    } else {
+        // Handle case when product_id is a single integer
+        $query = "SELECT * FROM shoe_stocks 
+                  INNER JOIN sizes ON shoe_stocks.size_id = sizes.id 
+                  WHERE shoe_id = ? AND size = ?";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute([$product_id, $size]);
+    }
+
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (empty($result)) {
+        return "Unavailable";
+    }
+
+    return $result;
+}

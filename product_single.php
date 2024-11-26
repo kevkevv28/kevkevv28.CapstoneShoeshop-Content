@@ -45,6 +45,26 @@
         // Optionally clear the session variable after showing the message
         unset( $_SESSION['Shoes_already']);
     }
+
+    if (isset( $_SESSION['Unavailable'])) {
+        
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Shoes Unavailable!',
+                    text: '". $_SESSION['Unavailable']. "',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>
+        ";
+        
+        // Optionally clear the session variable after showing the message
+        unset( $_SESSION['Unavailable']);
+    }
     
 
     include('includes/topbar.php');
@@ -200,12 +220,20 @@
                                     <div class="col d-grid">
                                         <button type="submit" class="btn btn-success btn-lg" name="addtocart"  ><i class="fa fa-fw fa-shopping-cart mr-1"></i>Add To Cart <i class="fa fa-fw fa-shopping-cart mr-1"></i></button>
                                     </div>
-                                </div>
+                                </div>  
+
+
+
+
                                 <div class="row pb-3">
                                     <div class="col d-grid">
-                                        <button type="submit" class="btn btn-success btn-lg" value="buy">Buy</button>
+                                        <button type="button" class="btn btn-success btn-lg" id="buy-btn">Buy</button>
                                     </div>
                                     
+
+
+
+
                                 </div>
                             </form>
                            
@@ -475,7 +503,70 @@
         document.getElementById('productsingle').submit();
     });
 
+    });
+
+    
+
+    document.addEventListener('DOMContentLoaded', function () {
+    // Select the buy button
+    const buyButton = document.getElementById('buy-btn');
+
+    // Add a click event listener to the buy button
+    buyButton.addEventListener('click', function () {
+        // Retrieve the user ID and product ID
+        const userId = document.querySelector('input[name="user_id"]').value;
+        const productId = document.querySelector('input[name="product_id"]').value;
+
+        // Get the selected size and size ID
+        const selectedSize = document.getElementById('selectedSize').value;
+        const selectedSizeId = document.getElementById('selectedSizeId').value;
+
+        // Get the product quantity
+        const productQuantity = document.getElementById('product-quantity').value;
+
+        // Validate required fields
+        if (!selectedSize || !productQuantity || !productId) {
+            alert("Please ensure size, quantity, and product are selected before proceeding.");
+            return;
+        }
+
+        // Create a form to submit the data to checkout.php
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'checkout.php';
+
+        // Add required fields as hidden inputs
+        const checkoutInput = document.createElement('input');
+        checkoutInput.type = 'hidden';
+        checkoutInput.name = 'checkout';
+        checkoutInput.value = '1'; // Arbitrary value to signal the POST request
+        form.appendChild(checkoutInput);
+
+        const shoeIdInput = document.createElement('input');
+        shoeIdInput.type = 'hidden';
+        shoeIdInput.name = `shoe_id[${productId}]`; // Array indexed by shoe_id
+        shoeIdInput.value = productId;
+        form.appendChild(shoeIdInput);
+
+        const sizeInput = document.createElement('input');
+        sizeInput.type = 'hidden';
+        sizeInput.name = `size[${productId}]`; // Array indexed by shoe_id
+        sizeInput.value = selectedSize;
+        form.appendChild(sizeInput);
+
+        const quantityInput = document.createElement('input');
+        quantityInput.type = 'hidden';
+        quantityInput.name = `quantity[${productId}]`; // Array indexed by shoe_id
+        quantityInput.value = productQuantity;
+        form.appendChild(quantityInput);
+
+        // Append the form to the body and submit it
+        document.body.appendChild(form);
+        form.submit();
+    });
 });
+
+
 </script>
 
 

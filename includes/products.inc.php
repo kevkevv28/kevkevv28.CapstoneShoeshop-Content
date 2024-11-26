@@ -14,8 +14,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['addtocart'])) {
         include_once 'config_session.inc.php';
      
         $checkifadded = get_product_cart($pdo, $productid, $usersid);
+        
 
         $errors = [];
+
+
+        
+
 
         if (empty($size)) {
             $errors['sizeNotSelected'] = "Product Size not Selected ";
@@ -26,14 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['addtocart'])) {
             header("Location: ../product_single.php?prodid=". $productid. "");
             die();
         }
-        
-
+       
         if ($errors) {
             $_SESSION["errors_product"] = $errors;
 
           
            
             header("Location: ../product_single.php?prodid=". $productid. "");
+            die();
+        }
+
+         $checkavailable = get_product_stock($pdo, $productid, $size);
+        
+        if ($checkavailable == "Unavailable") {
+            $_SESSION['Unavailable'] = "Unavailable Shoe Stocks Please contact Admin";
+            header("Location: ../product_single.php?prodid=$productid");
             die();
         }
      

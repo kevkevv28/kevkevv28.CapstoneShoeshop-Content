@@ -1,119 +1,61 @@
-<?php
-require __DIR__ . "/../vendor/autoload.php";
+<?php 
 
-use PaypalServerSdkLib\Authentication\ClientCredentialsAuthCredentialsBuilder;
-use PaypalServerSdkLib\Environment;
-use PaypalServerSdkLib\PaypalServerSDKClientBuilder;
-use PaypalServerSdkLib\Models\Builders\MoneyBuilder;
-use PaypalServerSdkLib\Models\Builders\OrderRequestBuilder;
-use PaypalServerSdkLib\Models\Builders\PurchaseUnitRequestBuilder;
-use PaypalServerSdkLib\Models\Builders\AmountWithBreakdownBuilder;
-use PaypalServerSdkLib\Models\Builders\ShippingDetailsBuilder;
-use PaypalServerSdkLib\Models\Builders\ShippingOptionBuilder;
-use PaypalServerSdkLib\Models\ShippingType;
-
-$PAYPAL_CLIENT_ID = getenv("PAYPAL_CLIENT_ID");
-$PAYPAL_CLIENT_SECRET = getenv("PAYPAL_CLIENT_SECRET");
-
-
-$client = PaypalServerSdkClientBuilder::init()
-    ->clientCredentialsAuthCredentials(
-        ClientCredentialsAuthCredentialsBuilder::init(
-            $PAYPAL_CLIENT_ID,
-            $PAYPAL_CLIENT_SECRET
-        )
-    )
-    ->environment(Environment::SANDBOX)
-    ->build();
-
-
-function handleResponse($response)
-{
-    $jsonResponse = json_decode($response->getBody(), true);
-    return [
-        "jsonResponse" => $jsonResponse,
-        "httpStatusCode" => $response->getStatusCode(),
-    ];
-}
-
-$endpoint = $_SERVER["REQUEST_URI"];
-if ($endpoint === "/") {
-    try {
-        $response = [
-            "message" => "Server is running",
-        ];
-        header("Content-Type: application/json");
-        echo json_encode($response);
-    } catch (Exception $e) {
-        echo json_encode(["error" => $e->getMessage()]);
-        http_response_code(500);
-    }
-} 
-
-/**
- * Create an order to start the transaction.
- * @see https://developer.paypal.com/docs/api/orders/v2/#orders_create
- */
-function createOrder($cart)
-{
-    global $client;
-
-    $orderBody = [
-        "body" => OrderRequestBuilder::init("CAPTURE", [
-            PurchaseUnitRequestBuilder::init(
-                AmountWithBreakdownBuilder::init("USD", "100")->build()
-            )->build(),
-        ])->build(),
-    ];
+if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['codbtn'])) {
+    $userid = $_POST["userid"];
+    $product_ids = $_POST['shoeid'];
+    $sizes = $_POST['sizes'];
+    $quantity = $_POST['qty'];
+    $total_amout = $_POST['total'];
+    $address = $_POST['address'];
+    $payment_status = 'COD';
 
     
-    $apiResponse = $client->getOrdersController()->ordersCreate($orderBody);
-
-    return handleResponse($apiResponse);
-}
-
-if ($endpoint === "/api/orders") {
-    $data = json_decode(file_get_contents("php://input"), true);
-    $cart = $data["cart"];
-    header("Content-Type: application/json");
     try {
-        $orderResponse = createOrder($cart);
-        echo json_encode($orderResponse["jsonResponse"]);
-    } catch (Exception $e) {
-        echo json_encode(["error" => $e->getMessage()]);
-        http_response_code(500);
+        require_once 'dbh.inc.php';
+        require_once 'checkout_model.inc.php';
+        
+        include_once 'config_session.inc.php';
+        
+        
+        /*
+        $errors = [];
+
+        if (!isset($product_size)) {
+            $errors['sizeNotSelected'] = "Please Select Size";
+        } 
+
+        
+
+        if ($errors) {
+            $_SESSION["errors_signup"] = $errors;
+
+          
+           
+            header("Location: ../product_single.php");
+            die();
+        }
+       
+        */
+        add_orders( $pdo, $userid, $product_ids, $sizes, $quantity, $total_amout, $address, $payment_status);
+        remove_orders_from_cart( $pdo, $userid, $product_ids, $sizes, $quantity);
+        $success = [];
+        
+        $success['Order_success'] = "Order Successfull, Thank you for Purchasing";
+
+        $_SESSION["checkout_success"] = $success;
+
+        header("Location: ../index.php");
+
+        $pdo = null;
+        $stmt = null;
+
+        die();
+
+    } catch (PDOException $e ) {
+        die("Query Failed: " . $e->getMessage());
     }
+   
+
+}else{
+    header("Location: ../checkout.php");
 }
-
-
-/**
- * Capture payment for the created order to complete the transaction.
- * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
- */
-function captureOrder($orderID)
-{
-    global $client;
-
-    $captureBody = [
-        "id" => $orderID,
-    ];
-
-    $apiResponse = $client->getOrdersController()->ordersCapture($captureBody);
-
-    return handleResponse($apiResponse);
-}
-
-if (str_ends_with($endpoint, "/capture")) {
-    $urlSegments = explode("/", $endpoint);
-    end($urlSegments); // Will set the pointer to the end of array
-    $orderID = prev($urlSegments);
-    header("Content-Type: application/json");
-    try {
-        $captureResponse = captureOrder($orderID);
-        echo json_encode($captureResponse["jsonResponse"]);
-    } catch (Exception $e) {
-        echo json_encode(["error" => $e->getMessage()]);
-        http_response_code(500);
-    }
-}
-

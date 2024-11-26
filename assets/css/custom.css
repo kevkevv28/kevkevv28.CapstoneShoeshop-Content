@@ -1300,3 +1300,96 @@ input::-webkit-inner-spin-button {
     opacity: 1;
     transition: opacity 3.5s ease-in;
 }
+
+.marginbottom-checkout{
+ margin-bottom: 5rem;
+}
+/* Ensure the full height layout */
+.container.height {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.history{
+  height: 50vh;
+}
+
+.wide{
+  width: 48vh;
+}
+
+.wider{
+  width: 50vh;
+  
+  align-items: center;
+}
+
+.order_history{
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 60vh;
+  padding: 40px;
+  max-height: 60vh;
+  margin-left: -25vh;
+  overflow-y:auto;
+  border-radius: 10px;  
+  
+}
+
+.order_history .wider{
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add hover effect */
+}
+
+.order_history .wider:hover {
+    transform: scale(1.02); /* Slight zoom-in effect */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+.order_history .wider img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px; /* Space between image and details */
+}
+
+/* Product details */
+.order_history .wider h6 {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333; /* Dark text for readability */
+    margin: 0;
+}
+
+.order_history .wider p {
+    font-size: 0.9rem;
+    color: #666; /* Muted text for secondary info */
+    margin: 5px 0;
+}
+
+/* Price and quantity */
+.order_history .wider .text-success {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #28a745; /* Green for pricing */
+}
+
+.order_history .wider .text-muted {
+    font-size: 0.85rem;
+    color: #888; /* Muted text for quantity */
+}
+
+/* Scrollbar styling */
+.history::-webkit-scrollbar {
+    width: 8px;
+}
+
+.history::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 10px;
+}
+
+.history::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+}

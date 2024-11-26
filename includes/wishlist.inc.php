@@ -101,9 +101,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
    
     $productids = $_POST["shoeid"];
     $userid = $_POST["userid"];
-    $size = $_POST["size"];
-
-
+    $sizes = $_POST["sizes"];
+   
+    
     
     try {
         require_once 'dbh.inc.php';
@@ -111,15 +111,34 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
         require_once 'wishlist_contrl.inc.php';
         include_once 'config_session.inc.php';
         
-        $checkifadded = get_product_cart($pdo, $productids, $userid);
-        $checkavailable = get_product_stock($pdo, $productids, $size);
+        // Filter sizes to only include selected shoe IDs
+        $selectedSizes = array_intersect_key($sizes, array_flip($productids));
+      
 
+        $checkifadded = get_product_cart($pdo, $productids, $userid);
+        $checkavailable = get_product_stock($pdo, $productids, $selectedSizes);
+        
         $errors = [];
-        if($checkavailable == 'Unavailable'){
-            $_SESSION['Unavailable'] = "Shoes is still not available";
-             header("Location: ../wishlist.php");
+
+
+        /// Check availability of each product
+        $unavailableProducts = [];
+
+        foreach ($checkavailable as $product_id => $status) {
+            if ($status === "Unavailable") {
+                $unavailableProducts[] = $product_id; // Collect IDs of unavailable products
+            }
+        }
+
+        // Handle unavailable products
+        if (!empty($unavailableProducts)) {
+            $_SESSION['Unavailable'] = "The following shoes are unavailable: " . implode(", ", $unavailableProducts);
+            header("Location: ../wishlist.php");
             die();
         }
+
+
+
         if (empty($productids)) {
             $errors['noshoes'] = "No shoes Selected";
         } 
@@ -144,7 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['save_multiple'])) {
             die();
         }
        
-       wishlist_to_cart( $pdo,  $productids, $userid, $size);
+       wishlist_to_cart( $pdo,  $productids, $userid, $selectedSizes);
         $success = [];
         
         $success['wishlist_cart'] = "Wishlist products Added to cart";

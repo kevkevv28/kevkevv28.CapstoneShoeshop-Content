@@ -33,15 +33,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     include('includes/header.php');
 
     require_once 'includes/dbh.inc.php';
-    include('includes/cart_model.inc.php');
-    include('includes/cartmodal.php');
 
+    include_once 'includes/checkout_model.inc.php';
+    $total = 0; // Initialize total amount
+    foreach($shoeData as $shoe){
+        $shoedetail = get_shoes_detail($pdo, $shoe['shoe_id']);
+         // Calculate the price for this item (price * quantity)
+                
+                $itemTotal = $shoedetail['price'] * $shoe['quantity'];
+                $total += $itemTotal; // Add to total
+    }
 
-
+    
     
      ?>
      <script
-            src="https://www.paypal.com/sdk/js?client-id=test&buyer-country=US&currency=USD&components=buttons&disable-funding=venmo,paylater,card"
+            src="https://www.paypal.com/sdk/js?client-id=Ady7thazPzKwsKSz_XM0lXq74fR6K0S0l6lird0zJvzwy5X88w3A9hD77qBkG_aDYa15oBlxAsXMtSyV&currency=PHP&components=buttons&disable-funding=venmo,paylater,card"
             data-sdk-integration-source="developer-studio"
         ></script>
     <!-- Header --><nav class="navbar navbar-expand-lg navbar-light shadow">
@@ -97,12 +104,13 @@ DLJPS
 
             }else{
                 
-                include_once 'includes/checkout_model.inc.php';
+                
 
                 $result = get_user_topbar($pdo, $_SESSION['user_id']);
                 
                 $addressResult = get_user_address_for_checkout($pdo, $_SESSION['user_id']);
-                
+                $address =  $result['first_name'] ." " . $result['last_name'] . " , ". $addressResult['address'] . " , " . $addressResult['zipcode'] .  $addressResult['mobile_no']. "  Additional Info:" . $addressResult['brgy_street'] ;
+                            
                 
                 ?>
                
@@ -122,10 +130,14 @@ DLJPS
                 </div>
             <?php
             }
+
+
+
+           
             ?>
 
            
-
+            
             
             
            
@@ -218,9 +230,22 @@ DLJPS
                                 <small class="text-muted">Use your PayPal account for a fast and secure checkout.</small>
                             </label>
                         </div>
+
                         
-                        <button type="submit" id="payment-btn" class="btn btn-success btn-block mt-4">
-                            Proceed to Payment
+                         <input type="hidden" name="address" value="<?php echo $address ?>">
+                        <?php foreach ($shoeData as $shoe){
+                            $shoedetail = get_shoes_detail($pdo, $shoe['shoe_id']);
+                            ?>
+                        
+                        <input type="hidden" name="userid" value="<?php echo $_SESSION['user_id'] ?>">
+                        <input type="hidden" name="shoeid[]" value="<?php echo $shoe['shoe_id'] ?>">
+                        <input type="hidden" name="sizes[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo htmlspecialchars($shoe['size']); ?>">
+                        <input type="hidden" name="qty[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo $shoe['quantity']; ?>">
+                       <input type="hidden" name="total[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo $shoedetail['price']?>">
+
+                        <?php } ?>
+                        <button type="submit" id="payment-btn" class="btn btn-success btn-block mt-4"   >
+                            Select Payment Method
                         </button>
 
                           <!-- PayPal button container, initially hidden -->
@@ -256,7 +281,7 @@ DLJPS
                 
 
                 <?php 
-                $total = 0; // Initialize total amount
+                
 
                 foreach ($shoeData as $shoe) { 
                     
@@ -268,13 +293,11 @@ DLJPS
                     continue;
                 }
 
-                 // Calculate the price for this item (price * quantity)
-                $itemTotal = $shoedetail['price'] * $shoe['quantity'];
-                $total += $itemTotal; // Add to total
+                
                 ?>
-                <div class="for-each-product mt-5">
+                <div class="for-each-product marginbottom-checkout">
                     <!-- Example Product Item -->
-                    <div class="d-flex align-items-center border rounded p-3 mb-3">
+                    <div class="d-flex align-items-center border rounded  p-3 ">
                         <img src="assets/shoesphotos/<?php echo htmlspecialchars($shoedetail['product_img_name']); ?>" 
                             alt="Product Image" 
                             class="img-fluid rounded" 
@@ -285,6 +308,9 @@ DLJPS
                             </h6>
                             <p class="mb-1 text-muted small">
                                 Category: <?php echo htmlspecialchars($shoedetail['category']); ?>
+                            </p>
+                            <p class="mb-1 text-muted smaller">
+                                Size: <?php echo htmlspecialchars($shoe['size']); ?>
                             </p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="text-success font-weight-bold">
@@ -440,63 +466,66 @@ DLJPS
     
     <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
-    const codRadio = document.getElementById("cod");
-    const paypalRadio = document.getElementById("paypal");
-    const paymentButton = document.getElementById("payment-btn");
-    const paypalButtonContainer = document.getElementById("paypal-button-container");
+        document.addEventListener("DOMContentLoaded", function () {
+        const codRadio = document.getElementById("cod");
+        const paypalRadio = document.getElementById("paypal");
+        const paymentButton = document.getElementById("payment-btn");
+        const paypalButtonContainer = document.getElementById("paypal-button-container");
 
-    if (!codRadio || !paypalRadio || !paymentButton || !paypalButtonContainer) {
-        console.error("One or more elements are missing in the DOM.");
-        return;
-    }
-
-    // Function to update button text with animation and toggle visibility
-    function updateButtonText(newText) {
-        // Add fade-out class
-        paymentButton.classList.add("fade-out-checkout");
-
-        // Wait for the fade-out animation to complete
-        setTimeout(() => {
-            // Change the button text
-            paymentButton.textContent = newText;
-
-            // Add fade-in class
-            paymentButton.classList.remove("fade-out-checkout");
-            paymentButton.classList.add("fade-in-checkout");
-
-            // Remove fade-in class after animation ends
-            setTimeout(() => {
-                paymentButton.classList.remove("fade-in-checkout");
-            }, 400);
-        }, 400);
-    }
-
-    // Function to toggle visibility between payment button and PayPal button container
-    function togglePaymentMethod() {
-        if (paypalRadio.checked) {
-            paymentButton.style.display = "none";  // Hide the payment button
-            paypalButtonContainer.style.display = "block";  // Show PayPal button container
-        } else {
-            paymentButton.style.display = "block";  // Show the payment button
-            paypalButtonContainer.style.display = "none";  // Hide PayPal button container
+        if (!codRadio || !paypalRadio || !paymentButton || !paypalButtonContainer) {
+            console.error("One or more elements are missing in the DOM.");
+            return;
         }
-    }
 
-    // Event listeners for radio buttons
-    codRadio.addEventListener("change", () => {
-        updateButtonText("Complete Order");
+        // Function to update button text, name attribute, and toggle visibility
+        function updatePaymentButton(newText, newName) {
+            // Update button text with animation
+            paymentButton.classList.add("fade-out-checkout");
+
+            setTimeout(() => {
+                paymentButton.textContent = newText;
+
+                // Update the name attribute
+                paymentButton.setAttribute("name", newName);
+
+                paymentButton.classList.remove("fade-out-checkout");
+                paymentButton.classList.add("fade-in-checkout");
+
+                setTimeout(() => {
+                    paymentButton.classList.remove("fade-in-checkout");
+                }, 400);
+            }, 400);
+        }
+
+        // Function to toggle visibility between payment button and PayPal button container
+        function togglePaymentMethod() {
+            if (paypalRadio.checked) {
+                paymentButton.style.display = "none"; // Hide payment button
+                paypalButtonContainer.style.display = "block"; // Show PayPal container
+            } else {
+                paymentButton.style.display = "block"; // Show payment button
+                paypalButtonContainer.style.display = "none"; // Hide PayPal container
+            }
+        }
+
+        // Event listeners for radio buttons
+        codRadio.addEventListener("change", () => {
+            updatePaymentButton("Complete Order", "codbtn");
+            togglePaymentMethod();
+        });
+
+        paypalRadio.addEventListener("change", () => {
+            updatePaymentButton("Pay Now", "paypalbtn");
+            togglePaymentMethod();
+        });
+
+        // Initial call to set default button text and visibility based on initial state
+        const defaultText = codRadio.checked ? "Complete Order" : paypalRadio.checked ? "Pay Now" : "Select Payment Method";
+        const defaultName = codRadio.checked ? "codbtn" : paypalRadio.checked ? "paypalbtn" : "";
+        updatePaymentButton(defaultText, defaultName);
         togglePaymentMethod();
     });
-    paypalRadio.addEventListener("change", () => {
-        updateButtonText("Pay Now");
-        togglePaymentMethod();
-    });
 
-    // Initial call to set the default button text and visibility based on initial radio button state
-    updateButtonText(paymentButton.textContent);
-    togglePaymentMethod();
-});
 
 
 

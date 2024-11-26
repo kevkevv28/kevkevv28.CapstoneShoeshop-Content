@@ -56,6 +56,27 @@
         unset($_SESSION['success_login']);
     }
 
+    if (isset($_SESSION['checkout_success'])) {
+    // Check if $_SESSION['checkout_success'] is an array
+    $message = is_array($_SESSION['checkout_success']) ? implode(" ", $_SESSION['checkout_success']) : $_SESSION['checkout_success'];
+    
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Thank you for purchasing!',
+                    text: '" . $message . "',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+        ";
+
+        // Optionally clear the session variable after showing the message
+        unset($_SESSION['checkout_success']);
+    }
+
     include('includes/topbar.php');
 
    

@@ -16,6 +16,26 @@
 
     include('includes/topbar.php');
 
+    if (isset($_SESSION['statusemail'])) {
+    // Check if $_SESSION['statusemail'] is an array
+    $message = is_array($_SESSION['statusemail']) ? implode(" ", $_SESSION['statusemail']) : $_SESSION['statusemail'];
+    
+        echo "
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Thank you for Contacting Us!',
+                    text: '" . $message . "',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+        ";
+
+        // Optionally clear the session variable after showing the message
+        unset($_SESSION['statusemail']);
+    }
    
 ?>
 

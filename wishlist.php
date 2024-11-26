@@ -57,24 +57,22 @@
         unset($_SESSION['wishcart']);
     }
 
-    if (isset( $_SESSION['Unavailable'])) {
-        
+    if (isset($_SESSION['Unavailable'])) {
         echo "
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
-                    title: 'Unavailable Shoe!',
-                    text: '". $_SESSION['Unavailable']. "',
+                    title: 'Unavailable Products!',
+                    text: 'The shoes are Unavailable',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             });
-            
         </script>
         ";
-        
-        // Optionally clear the session variable after showing the message
-        unset( $_SESSION['Unavailable']);
+
+        // Unset the session variable after displaying the message
+        unset($_SESSION['Unavailable']);
     }
     if (isset( $_SESSION['Shoes_already'])) {
         
@@ -141,13 +139,13 @@
                     <tbody>
                         <?php foreach ($Wishlistresult as $wishlist ){ ?>
 
-                            <?php $checkavailable = get_product_stock($pdo, $wishlist['product_id'], $wishlist['size']) ?> 
+                            <?php $checkavailable = get_each_product_stock($pdo, $wishlist['product_id'], $wishlist['size']) ?> 
 
                         <tr>
                             <td>
                                 <input type="checkbox" name="shoeid[]"class="flat-red wishlist-checkbox" value="<?php echo htmlspecialchars($wishlist['product_id']); ?>">
                                 <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
-                                <input type="hidden" name="size" value="<?php echo htmlspecialchars($wishlist['size']); ?>">
+                                <input type="hidden" name="sizes[<?php echo htmlspecialchars($wishlist['product_id']); ?>]" value="<?php echo htmlspecialchars($wishlist['size']); ?>">
                                 <button type="button" class="delwishbtn btn btn-danger marginleftmore marginbottom " ><i class="fa fa-trash" aria-hidden="true"></i></button> 
                             
                             </td>

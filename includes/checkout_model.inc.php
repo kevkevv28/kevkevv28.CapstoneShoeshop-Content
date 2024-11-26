@@ -48,3 +48,46 @@ function get_shoes_detail(object $pdo, int|array $product_id) {
         return $result[0] ?? null; // Return a single row or null for a single product ID
     }
 }
+
+
+function add_orders(object $pdo, int $user_id, array $product_ids, array $sizes, array $quantity,array $total_amout,string $address,string $payment_status) {
+    $query = "INSERT INTO shoes_order (user_id, shoes_id, shoe_size, shoe_quantity, total_price, payment_status, buyer_address) VALUES (:user_id, :shoe_id, :shoe_size, :qty , :total_amount,:payment_stats, :b_address)";
+    $stmt = $pdo->prepare($query);
+
+    foreach ($product_ids as $product_id ) {
+        // Bind values for each product in the list
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":shoe_id", $product_id);
+        $stmt->bindParam(":shoe_size", $sizes[$product_id]);
+        $stmt->bindParam(":qty", $quantity[$product_id]);
+        $stmt->bindParam(":total_amount", $total_amout[$product_id]);
+        $stmt->bindParam(":payment_stats", $payment_status);
+        $stmt->bindParam(":b_address", $address);
+        
+      
+
+
+        // Execute the prepared statement for each product
+        $stmt->execute();
+    }
+}
+
+function remove_orders_from_cart(object $pdo, int $user_id, array $product_ids, array $sizes, array $quantity ){
+    $query = "DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id AND quantity_cart = :quantity AND `size` = :shoe_size";
+    $stmt = $pdo->prepare($query);
+
+    foreach ($product_ids as $product_id ) {
+        // Bind values for each product in the list
+        $stmt->bindParam(":user_id", $user_id);
+        $stmt->bindParam(":product_id", $product_id);
+        $stmt->bindParam(":shoe_size", $sizes[$product_id]);
+        $stmt->bindParam(":quantity", $quantity[$product_id]);
+  
+        
+      
+
+
+        // Execute the prepared statement for each product
+        $stmt->execute();
+    }
+}
