@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['addtocart'])) {
             header("Location: ../product_single.php?prodid=". $productid. "");
             die();
         }
-
+        /*
          $checkavailable = get_product_stock($pdo, $productid, $size);
         
         if ($checkavailable == "Unavailable") {
@@ -48,9 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['addtocart'])) {
             header("Location: ../product_single.php?prodid=$productid");
             die();
         }
-     
+        */
         
-       add_to_cart( $pdo,  $productid, $usersid, $size, $qty);
+        add_to_cart( $pdo,  $productid, $usersid, $size, $qty);
         $success = [];
         
         $success['added_cart'] = "Product Added to cart";

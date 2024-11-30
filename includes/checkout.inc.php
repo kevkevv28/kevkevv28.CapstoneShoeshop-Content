@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['codbtn'])) {
     try {
         require_once 'dbh.inc.php';
         require_once 'checkout_model.inc.php';
-        
         include_once 'config_session.inc.php';
         
         
@@ -40,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"  && isset($_POST['codbtn'])) {
         remove_orders_from_cart( $pdo, $userid, $product_ids, $sizes, $quantity);
         $success = [];
         
-        $success['Order_success'] = "Order Successfull, Thank you for Purchasing";
+        $success['Order_success'] = "CASH ON DELIVERY Order Successfull, Thank you for Purchasing";
 
         $_SESSION["checkout_success"] = $success;
 

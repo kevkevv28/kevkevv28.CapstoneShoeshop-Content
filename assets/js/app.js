@@ -1,104 +1,70 @@
-window.paypal
-    .Buttons({
-        style: {
-            shape: "pill",
-            layout: "horizontal",
-            color: "gold",
-            label: "pay",
-        } ,
-
-        async createOrder() {
-            try {
-                const response = await fetch("/api/orders", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
+paypal.Buttons({
+    createOrder: function (data, actions) {
+        // Dynamically set the amount
+        const amount = parseFloat($('#total_amount_checkout').val()).toFixed(2) || "0.00";
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: amount,
+                        currency_code: 'PHP',
                     },
-                    // use the "body" param to optionally pass additional order information
-                    // like product ids and quantities
-                    body: JSON.stringify({
-                        cart: [
-                            {
-                                id: "YOUR_PRODUCT_ID",
-                                quantity: "YOUR_PRODUCT_QUANTITY",
-                            },
-                        ],
-                    }),
-                });
+                },
+            ],
+        });
+    },
+    onApprove: function (data, actions) {
+        return actions.order.capture().then(function (details) {
+            const transaction = details.purchase_units[0].payments.captures[0];
 
-                const orderData = await response.json();
+            const userId = $('#userid').val();
+            const adres = $('#address').val();
+            const shoeIds = [];
+            const sizes = [];
+            const quantities = [];
+            const totals = [];
 
-                if (orderData.id) {
-                    return orderData.id;
-                }
-                const errorDetail = orderData?.details?.[0];
-                const errorMessage = errorDetail
-                    ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-                    : JSON.stringify(orderData);
+            // Collect data for each shoe
+            $("input[name='shoeid[]']").each(function () {
+                const shoeId = $(this).val();
+                shoeIds.push(shoeId);
+                sizes.push($(`#size_${shoeId}`).val());
+                quantities.push($(`#qty_${shoeId}`).val());
+                totals.push($(`#total_${shoeId}`).val());
+            });
 
-                throw new Error(errorMessage);
-            } catch (error) {
-                console.error(error);
-                // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-            }
-        } ,
-
-        async onApprove(data, actions) {
-            try {
-                const response = await fetch(
-                    `/api/orders/${data.orderID}/capture`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
+            // Send data via AJAX
+            $.ajax({
+                method: "POST",
+                url: "includes/paypal_processor.php",
+                data: {
+                    transaction_id: transaction.id,
+                    transaction_status: transaction.status,
+                    user: userId,
+                    addres: adres,
+                    product_id: shoeIds,
+                    sizes: sizes,
+                    qtys: quantities,
+                    total_shoe: totals,
+                },
+                success: function (response) {
+                    if (response == 1) {
+                        window.location.href = "index.php"
+                    } else {
+                        alert("Failed to process payment.");
+                        console.log("Server Response:", response);
                     }
-                );
-
-                const orderData = await response.json();
-                // Three cases to handle:
-                //   (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                //   (2) Other non-recoverable errors -> Show a failure message
-                //   (3) Successful transaction -> Show confirmation or thank you message
-
-                const errorDetail = orderData?.details?.[0];
-
-                if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-                    // (1) Recoverable INSTRUMENT_DECLINED -> call actions.restart()
-                    // recoverable state, per
-                    // https://developer.paypal.com/docs/checkout/standard/customize/handle-funding-failures/
-                    return actions.restart();
-                } else if (errorDetail) {
-                    // (2) Other non-recoverable errors -> Show a failure message
-                    throw new Error(
-                        `${errorDetail.description} (${orderData.debug_id})`
-                    );
-                } else if (!orderData.purchase_units) {
-                    throw new Error(JSON.stringify(orderData));
-                } else {
-                    // (3) Successful transaction -> Show confirmation or thank you message
-                    // Or go to another URL:  actions.redirect('thank_you.html');
-                    const transaction =
-                        orderData?.purchase_units?.[0]?.payments
-                            ?.captures?.[0] ||
-                        orderData?.purchase_units?.[0]?.payments
-                            ?.authorizations?.[0];
-                    resultMessage(
-                        `Transaction ${transaction.status}: ${transaction.id}<br>
-          <br>See console for all available details`
-                    );
-                    console.log(
-                        "Capture result",
-                        orderData,
-                        JSON.stringify(orderData, null, 2)
-                    );
-                }
-            } catch (error) {
-                console.error(error);
-                resultMessage(
-                    `Sorry, your transaction could not be processed...<br><br>${error}`
-                );
-            }
-        } ,
-    })
-    .render("#paypal-button-container"); 
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    console.log("Response Text:", xhr.responseText);
+                    alert("An error occurred while processing your payment.");
+                },
+            });
+        });
+    },
+    onError: function (error) {
+        console.error(error);
+        alert("An error occurred while processing the payment. Please try again.");
+    },
+}).render("#paypal-button-container");

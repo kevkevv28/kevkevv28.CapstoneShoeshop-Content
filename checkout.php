@@ -232,17 +232,18 @@ DLJPS
                         </div>
 
                         
-                         <input type="hidden" name="address" value="<?php echo $address ?>">
+                         <input type="hidden" name="address" id="address" value="<?php echo $address ?>">
                         <?php foreach ($shoeData as $shoe){
                             $shoedetail = get_shoes_detail($pdo, $shoe['shoe_id']);
                             ?>
                         
-                        <input type="hidden" name="userid" value="<?php echo $_SESSION['user_id'] ?>">
-                        <input type="hidden" name="shoeid[]" value="<?php echo $shoe['shoe_id'] ?>">
-                        <input type="hidden" name="sizes[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo htmlspecialchars($shoe['size']); ?>">
-                        <input type="hidden" name="qty[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo $shoe['quantity']; ?>">
-                       <input type="hidden" name="total[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" value="<?php echo $shoedetail['price']?>">
+                        <input type="hidden" name="userid" id="userid" value="<?php echo $_SESSION['user_id'] ?>">
+                        <input type="hidden" name="shoeid[]" id="shoeid_<?php echo $shoe['shoe_id']; ?>"value="<?php echo $shoe['shoe_id'] ?>">
 
+                        <input type="hidden" name="sizes[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]" id="size_<?php echo $shoe['shoe_id']; ?>" value="<?php echo htmlspecialchars($shoe['size']); ?>">
+                        <input type="hidden" name="qty[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]"  id="qty_<?php echo $shoe['shoe_id']; ?>" value="<?php echo $shoe['quantity']; ?>">
+                        <input type="hidden" name="total[<?php echo htmlspecialchars($shoe['shoe_id']); ?>]"  id="total_<?php echo $shoe['shoe_id']; ?>" value="<?php echo $shoedetail['price']?>">
+                        <input type="hidden" id="total_amount_checkout" value="<?php echo $total?>"> 
                         <?php } ?>
                         <button type="submit" id="payment-btn" class="btn btn-success btn-block mt-4"   >
                             Select Payment Method
@@ -531,8 +532,13 @@ DLJPS
 
 
 </script>
+
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=Ady7thazPzKwsKSz_XM0lXq74fR6K0S0l6lird0zJvzwy5X88w3A9hD77qBkG_aDYa15oBlxAsXMtSyV&currency=PHP&components=buttons&disable-funding=venmo,paylater,card"
+        data-sdk-integration-source="developer-studio"
+    ></script>
  
-        <script src="assets/js/app.js"></script>
+    <script src="assets/js/app.js"></script>
     <!-- End Slider Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

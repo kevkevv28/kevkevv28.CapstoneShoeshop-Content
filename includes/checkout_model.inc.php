@@ -72,6 +72,52 @@ function add_orders(object $pdo, int $user_id, array $product_ids, array $sizes,
     }
 }
 
+function add_to_online_transaction($pdo, $userid, $product_id, $transaction_id, $transaction_status, $total){
+    $stmt = $pdo->prepare("
+        INSERT INTO online_transaction (customer_id, shoe_id, transaction_status, transaction_id, total_amount)
+        VALUES (:user_id,:product_id, :transacstat, :transaction_id, :total_amount)
+    ");
+    $stmt->execute([
+        ':user_id' => $userid,
+        ':product_id' => $product_id,
+        ':transacstat' => $transaction_status,
+        ':transaction_id' => $transaction_id,
+        ':total_amount' => $total,
+
+
+    ]);
+}
+
+function add_order($pdo, $userid, $product_id, $size, $qty, $total, $address, $payment_status) {
+    $stmt = $pdo->prepare("
+        INSERT INTO shoes_order (user_id, shoes_id, shoe_size, shoe_quantity, total_price, payment_status, buyer_address)
+        VALUES (:user_id, :product_id, :size, :quantity, :total_amount, :payment_status, :baddress)
+    ");
+    $stmt->execute([
+        ':user_id' => $userid,
+        ':product_id' => $product_id,
+        ':size' => $size,
+        ':quantity' => $qty,
+        ':total_amount' => $total,
+        ':payment_status' => $payment_status,
+        ':baddress' => $address
+
+    ]);
+}
+
+function remove_order_from_cart($pdo, $userid, $product_id, $size, $qty) {
+    $stmt = $pdo->prepare("
+        DELETE FROM cart
+        WHERE user_id = :user_id AND product_id = :product_id AND size = :size AND quantity_cart = :quantity
+    ");
+    $stmt->execute([
+        ':user_id' => $userid,
+        ':product_id' => $product_id,
+        ':size' => $size,
+        ':quantity' => $qty,
+    ]);
+}
+
 function remove_orders_from_cart(object $pdo, int $user_id, array $product_ids, array $sizes, array $quantity ){
     $query = "DELETE FROM cart WHERE user_id = :user_id AND product_id = :product_id AND quantity_cart = :quantity AND `size` = :shoe_size";
     $stmt = $pdo->prepare($query);
