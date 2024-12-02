@@ -1321,14 +1321,14 @@ input::-webkit-inner-spin-button {
 }
 
 .wider{
-  width: 50vh;
+  width: 70vh;
   
   align-items: center;
 }
 
 .order_history{
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 60vh;
+  width: 80vh;
   padding: 40px;
   max-height: 60vh;
   margin-left: -25vh;
@@ -1393,3 +1393,41 @@ input::-webkit-inner-spin-button {
 .history::-webkit-scrollbar-thumb:hover {
     background-color: #999;
 }
+
+.bs-slider .carousel-inner .item {
+    height: 100vh;
+    background-size: cover;
+    background-position: center center;
+}
+.bs-slider .bs-slider-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+#template-mo-zay-hero-carousel-2 {
+    margin-top: 50px; /* Adjust this value as needed */
+}
+
+.text-stroke-slider{
+ 
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: black;
+
+}
+.text-stroke-slider-b{
+   -webkit-text-fill-color: rgb(0, 0, 0); /* Will override color (regardless of order) */
+ -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgb(172, 172, 172);
+  
+}
+
+.fixed-image-month {
+    width: 20rem !important; /* Set a fixed width */
+    height: 20rem !important; /* Set a fixed height */
+    object-fit:cover !important; /* Ensure the image fills the area while maintaining aspect ratio */
+    border-radius:50%; /* Keep the circular shape */
+}
+

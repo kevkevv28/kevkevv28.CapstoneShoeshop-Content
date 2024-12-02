@@ -1,4 +1,10 @@
 paypal.Buttons({
+    style: {
+            shape: "pill",
+            layout: "horizontal",
+            color: "gold",
+            label: "pay",
+        } ,
     createOrder: function (data, actions) {
         // Dynamically set the amount
         const amount = parseFloat($('#total_amount_checkout').val()).toFixed(2) || "0.00";
@@ -66,5 +72,14 @@ paypal.Buttons({
     onError: function (error) {
         console.error(error);
         alert("An error occurred while processing the payment. Please try again.");
+    },
+     onCancel: (data) => {
+        // Set the success message in sessionStorage (or localStorage)
+        sessionStorage.setItem("checkout_Error", JSON.stringify({
+            Order_success: "PAYPAL PAYMENT Order Cancelled. Please Try again!"
+        }));
+
+        // Redirect to the home page
+        window.location.assign("index.php");
     },
 }).render("#paypal-button-container");

@@ -1,196 +1,75 @@
 <?php
-    require_once 'includes/config_session.inc.php';
-    include('includes/header.php');
-    if (isset($_SESSION['already'])) {
-        echo "<div id='loginAlert'class='alert alert-warning alert-dismissible fade show' role='alert'>
-                {$_SESSION['already']}
-                <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
-                    <span aria-hidden='true'>&times;</span>
-                </button>
-              </div>";
-        // Unset the flash message after displaying it
-        unset($_SESSION['already']);
+require_once 'includes/config_session.inc.php';
+include('includes/header.php');
 
-
-    }
-
-    if (isset($_SESSION['logout'])) {
-    $message = is_array($_SESSION['logout']) ? implode(" ", $_SESSION['logout']) : $_SESSION['logout'];
-
+// Display session alerts/messages
+function displaySessionAlert($key, $title = '', $icon = 'info', $unset = true) {
+    if (isset($_SESSION[$key])) {
+        $message = is_array($_SESSION[$key]) ? implode(" ", $_SESSION[$key]) : $_SESSION[$key];
         echo "
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 Swal.fire({
-                    title: '". $message . "',
-                    text: '',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            });
-            
-        </script>
-        ";
-        
-        // Optionally clear the session variable after showing the message
-        unset($_SESSION['logout']);
-    }
-
-    if (isset($_SESSION['success_login'])) {
-    // Check if $_SESSION['success_login'] is an array
-    $message = is_array($_SESSION['success_login']) ? implode(" ", $_SESSION['success_login']) : $_SESSION['success_login'];
-    
-        echo "
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Success!',
-                    text: '" . $message . "',
-                    icon: 'success',
+                    title: '{$title}',
+                    text: '{$message}',
+                    icon: '{$icon}',
                     confirmButtonText: 'OK'
                 });
             });
         </script>
         ";
-
-        // Optionally clear the session variable after showing the message
-        unset($_SESSION['success_login']);
+        if ($unset) {
+            unset($_SESSION[$key]);
+        }
     }
+}
 
-    if (isset($_SESSION['checkout_success'])) {
-    // Check if $_SESSION['checkout_success'] is an array
-    $message = is_array($_SESSION['checkout_success']) ? implode(" ", $_SESSION['checkout_success']) : $_SESSION['checkout_success'];
-    
-        echo "
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                Swal.fire({
-                    title: 'Thank you for purchasing!',
-                    text: '" . $message . "',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
-            });
-        </script>
-        ";
+// Handle session messages
+if (isset($_SESSION['already'])) {
+    echo "<div id='loginAlert' class='alert alert-warning alert-dismissible fade show' role='alert'>
+            {$_SESSION['already']}
+            <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+                <span aria-hidden='true'>&times;</span>
+            </button>
+          </div>";
+    unset($_SESSION['already']);
+}
 
-        // Optionally clear the session variable after showing the message
-        unset($_SESSION['checkout_success']);
-    }
+displaySessionAlert('logout', '', 'error');
+displaySessionAlert('success_login', 'Success!', 'success');
+displaySessionAlert('checkout_success', 'Thank you for purchasing!', 'success');
 
-    include('includes/topbar.php');
+include('includes/topbar.php');
+include 'includes/carousel.php';
+include 'includes/dbh.inc.php';
 
-   
+// Render Carousel
+renderCarousel("template-mo-zay-hero-carousel", "tbl_slider2", $pdo);
+renderMiddleHeaderAndBestSellers($pdo);
+
 ?>
 
 
-    <!-- Start Banner Hero -->
-    <div id="template-mo-zay-hero-carousel" class="carousel slide" data-bs-ride="carousel">
-        <ol class="carousel-indicators">
-            <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="0" class="active"></li>
-            <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="1"></li>
-            <li data-bs-target="#template-mo-zay-hero-carousel" data-bs-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="container">
-                    <div class="row p-5">
-                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="img-fluid" src="./assets/img/banner_img_01.jpg" alt="">
-                        </div>
-                        <div class="col-lg-6 mb-0 d-flex align-items-center">
-                            <div class="text-align-left align-self-center">
-                                <h1 class="h1 text-success"><b>Zay</b> eCommerce</h1>
-                                <h3 class="h2">Tiny and Perfect eCommerce Template</h3>
-                                <p>
-                                    Zay Shop is an eCommerce HTML5 CSS template with latest version of Bootstrap 5 (beta 1). 
-                                    This template is 100% free provided by <a rel="sponsored" class="text-success" href="https://templatemo.com" target="_blank">TemplateMo</a> website. 
-                                    Image credits go to <a rel="sponsored" class="text-success" href="https://stories.freepik.com/" target="_blank">Freepik Stories</a>,
-                                    <a rel="sponsored" class="text-success" href="https://unsplash.com/" target="_blank">Unsplash</a> and
-                                    <a rel="sponsored" class="text-success" href="https://icons8.com/" target="_blank">Icons 8</a>.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="container">
-                    <div class="row p-5">
-                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="img-fluid" src="./assets/img/banner_img_02.jpg" alt="">
-                        </div>
-                        <div class="col-lg-6 mb-0 d-flex align-items-center">
-                            <div class="text-align-left">
-                                <h1 class="h1">Proident occaecat</h1>
-                                <h3 class="h2">Aliquip ex ea commodo consequat</h3>
-                                <p>
-                                    You are permitted to use this Zay CSS template for your commercial websites. 
-                                    You are <strong>not permitted</strong> to re-distribute the template ZIP file in any kind of template collection websites.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="container">
-                    <div class="row p-5">
-                        <div class="mx-auto col-md-8 col-lg-6 order-lg-last">
-                            <img class="img-fluid" src="./assets/img/banner_img_03.jpg" alt="">
-                        </div>
-                        <div class="col-lg-6 mb-0 d-flex align-items-center">
-                            <div class="text-align-left">
-                                <h1 class="h1">Repr in voluptate</h1>
-                                <h3 class="h2">Ullamco laboris nisi ut </h3>
-                                <p>
-                                    We bring you 100% free CSS templates for your websites. 
-                                    If you wish to support TemplateMo, please make a small contribution via PayPal or tell your friends about our website. Thank you.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <a class="carousel-control-prev text-decoration-none w-auto ps-3" href="#template-mo-zay-hero-carousel" role="button" data-bs-slide="prev">
-            <i class="fas fa-chevron-left"></i>
-        </a>
-        <a class="carousel-control-next text-decoration-none w-auto pe-3" href="#template-mo-zay-hero-carousel" role="button" data-bs-slide="next">
-            <i class="fas fa-chevron-right"></i>
-        </a>
-    </div>
-    <!-- End Banner Hero -->
+<?php
+// Render second carousel and include footer
+renderCarousel("template-mo-zay-hero-carousel-2", "tbl_slider3", $pdo);
+include('includes/footer.php');
+?>
 
+<script>
+document.addEventListener("DOMContentLoaded", (event) => {
+    const successMessage = sessionStorage.getItem("checkout_Error");
+    if (successMessage) {
+        const successData = JSON.parse(successMessage);
 
-        <!-- Start Categories of The Month -->
-        <section class="container py-5">
-        <div class="row text-center pt-3">
-            <div class="col-lg-6 m-auto">
-                <h1 class="h1">Best Selling of The Month</h1>
-                <p>
-                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                    deserunt mollit anim id est laborum.
-                </p>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="./assets/img/category_img_01.jpg" class="rounded-circle img-fluid border"></a>
-                <h5 class="text-center mt-3 mb-3">Watches</h5>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
-            </div>
-            <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="./assets/img/category_img_02.jpg" class="rounded-circle img-fluid border"></a>
-                <h2 class="h5 text-center mt-3 mb-3">Shoes</h2>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
-            </div>
-            <div class="col-12 col-md-4 p-5 mt-3">
-                <a href="#"><img src="./assets/img/category_img_03.jpg" class="rounded-circle img-fluid border"></a>
-                <h2 class="h5 text-center mt-3 mb-3">Accessories</h2>
-                <p class="text-center"><a class="btn btn-success">Go Shop</a></p>
-            </div>
-        </div>
-    </section>
-    <!-- End Categories of The Month -->
+        Swal.fire({
+            title: 'Payment Error!',
+            text: successData.Order_success,
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
 
-<?php include('includes/footer.php'); ?>
+        sessionStorage.removeItem("checkout_Error");
+    }
+});
+</script>
