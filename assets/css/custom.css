@@ -764,6 +764,17 @@ input::-webkit-inner-spin-button {
   width: 100px;
 }
 
+.btnverify{
+  border-radius: 20px !important;
+  height: 40px;
+  width: 120px;
+}
+.btnverifys{
+  border-radius: 20px !important;
+  height: 40px;
+  width: 120px;
+}
+
 .btnadress {
   border-radius: 20px !important;
   height: 40px;
@@ -1333,9 +1344,12 @@ input::-webkit-inner-spin-button {
   max-height: 60vh;
   margin-left: -25vh;
   overflow-y:auto;
-  border-radius: 10px;  
+  border-radius: 20px;  
+  
+  
   
 }
+
 
 .order_history .wider{
   transition: transform 0.2s ease, box-shadow 0.2s ease; /* Add hover effect */
@@ -1431,3 +1445,105 @@ input::-webkit-inner-spin-button {
     border-radius:50%; /* Keep the circular shape */
 }
 
+.smallest{
+  font-size: x-small;
+}
+
+.span-cancel{
+  padding: 2px;
+  border:1px solid black;
+  border-radius: 10px;
+  background: none;
+  font-size: medium;
+  margin-right: 1vh;
+}
+.spancancel{
+  right: 0;
+}
+
+
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+
+
+/* Reviews Section */
+.reviews-title {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+/* Reviews Container */
+.reviews-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+/* Individual Reviews */
+.review {
+    transition: background-color 0.3s ease;
+}
+
+.review:hover {
+    background-color: #eef4fc;
+}
+
+.review .avatar {
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Stars Base Style */
+.star-input .star {
+    font-size: 1.5rem;
+    color: #ccc; /* Default color for stars */
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Highlight selected stars */
+.star-input .star.selected {
+    color: #ffc107; /* Gold for selected stars */
+}
+
+/* Highlight hovered stars */
+.star-input .star.hovered {
+    color: #ffd55a; /* Lighter gold for hovered stars */
+}
+
+/* Input Field and Button */
+.reviews-input {
+    border-radius: 8px;
+}
+
+.reviews-submit-btn {
+    border-radius: 8px;
+    font-weight: bold;
+}

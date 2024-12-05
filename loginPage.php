@@ -2,7 +2,17 @@
     require_once 'includes/config_session.inc.php';
     require_once 'includes/login_view.inc.php';
     if (isset($_SESSION['pleaselogin'])) {
-        echo "<script>alert('" . $_SESSION['pleaselogin'] . "');</script>";
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    title: 'Please Login to Continue!',
+                    text: '',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
+            
+        </script>";
         
         unset($_SESSION['pleaselogin']);
     }

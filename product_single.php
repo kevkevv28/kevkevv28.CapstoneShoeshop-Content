@@ -244,30 +244,72 @@
                 </div>
                 
             </div>
-            <div class="row">
-                
-                
-                <!-- col end -->
-                <div class="col-lg-12 ">
-                    <div class="card">
-                    
+
+
+            <div class="row" id="reviewsSection">
+                <div class="col-lg-12">
+                    <div class="card shadow-sm border-0 reviews-card">
                         <div class="card-body">
-                            <h1 class="h2">Reviews</h1>
-                                <div class="review border">
-
+                            <h2 class="h4 text-primary mb-4 reviews-title">Reviews</h2>
+                            
+                            <!-- Reviews Container -->
+                            <div class="reviews-container p-3 mb-4 border rounded bg-light">
+                                <!-- Example Review -->
+                                <div class="review d-flex p-3 mb-3 border-bottom">
+                                    <div class="avatar bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                        U1
+                                    </div>
+                                    <div>
+                                        <strong class="review-user d-block text-dark">User1</strong>
+                                        <div class="stars text-warning">
+                                            ★★★★☆
+                                        </div>
+                                        <p class="review-text mb-1 text-secondary">Great quality shoes!</p>
+                                        <small class="review-date text-muted">Posted on: 2024-12-05</small>
+                                    </div>
                                 </div>
-                            
-                            
+                                
+                                <!-- Example Review -->
+                                <div class="review d-flex p-3 mb-3 border-bottom">
+                                    <div class="avatar bg-success text-white rounded-circle d-flex justify-content-center align-items-center me-3" style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                        U2
+                                    </div>
+                                    <div>
+                                        <strong class="review-user d-block text-dark">User2</strong>
+                                        <div class="stars text-warning">
+                                            ★★★★★
+                                        </div>
+                                        <p class="review-text mb-1 text-secondary">Comfortable and stylish.</p>
+                                        <small class="review-date text-muted">Posted on: 2024-12-04</small>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <button class="margintop" type="submit"> Reviews</button>
-                            
-          
+                            <!-- Review Submission -->
+                            <div class="review-form">
+                                <form action="includes/review.inc.php" method="post">
+                                <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?>">
+                                <input type="hidden" name="user_id" value="<?php echo $_GET['prodid'] ?>">
+                                <label for="reviewStars" class="form-label">Rate this product:</label>
+                                <div id="reviewStars" class="star-input mb-3">
+                                    <span class="star" data-value="5">★</span>
+                                    <span class="star" data-value="4">★</span>
+                                    <span class="star" data-value="3">★</span>
+                                    <span class="star" data-value="2">★</span>
+                                    <span class="star" data-value="1">★</span>
+                                </div>
+                                <textarea id="reviewText" class="form-control mb-3 reviews-input" placeholder="Write your review here..." rows="3"></textarea>
+                                <button id="submitReview" class="btn btn-primary w-100 reviews-submit-btn">Submit Review</button>
+
+                                </form>
+                            </div>
                         </div>
                     </div>
-                    
                 </div>
-                
             </div>
+
+
+
         </div>
     </section>
     <!-- Close Content -->
@@ -626,6 +668,35 @@ if (isset($_GET['wishlist']) && $_GET['wishlist'] === 'success' && isset($_SESSI
 ?>
 
 <script>
+   // Handle star rating selection from left to right
+document.querySelectorAll('.star-input .star').forEach((star, index) => {
+    star.addEventListener('click', function () {
+        // Remove 'selected' class from all stars
+        document.querySelectorAll('.star-input .star').forEach(s => s.classList.remove('selected'));
+
+        // Add 'selected' class to clicked star and all previous ones
+        let siblings = Array.from(this.parentNode.children).slice(0, index + 1);
+        siblings.forEach(sibling => sibling.classList.add('selected'));
+
+        // Save the rating value (optional)
+        const rating = this.getAttribute('data-value');
+        console.log('Selected rating:', rating);
+    });
+
+    // Optional: Add hover effect for better user experience
+    star.addEventListener('mouseover', function () {
+        document.querySelectorAll('.star-input .star').forEach(s => s.classList.remove('hovered'));
+        let siblings = Array.from(this.parentNode.children).slice(0, index + 1);
+        siblings.forEach(sibling => sibling.classList.add('hovered'));
+    });
+
+    star.addEventListener('mouseout', function () {
+        document.querySelectorAll('.star-input .star').forEach(s => s.classList.remove('hovered'));
+    });
+});
+
+
+
     // JavaScript to handle click event on size buttons
     document.querySelectorAll('.btn-size').forEach(function(element) {
         element.addEventListener('click', function() {

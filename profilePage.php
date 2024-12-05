@@ -1,11 +1,14 @@
 <?php
     require_once 'includes/config_session.inc.php';
-    include('includes/header.php');
     if(!isset($_SESSION['user_id'])){
         $_SESSION['pleaselogin'] = "Please Log in First before seeing wishlist";
         header("Location: loginPage.php");
 
     }
+    include('includes/header.php');
+    include('includes/display_alert.php');
+    include('includes/verify_modal.php');
+    
     if (isset($_SESSION['already'])) {
         echo "<div id='loginAlert'class='alert alert-warning alert-dismissible fade show' role='alert'>
                 {$_SESSION['already']}
@@ -23,12 +26,31 @@
     include('includes/topbar.php');
     $profileresult = get_user_topbar($pdo, $_SESSION['user_id']);
     $addresscount = get_address_count($pdo, $_SESSION['user_id']);
+    displaySessionAlert('order', 'Cancelled!', 'success');
+    displaySessionAlert('success_verification', 'Success!', 'success');
+    displaySessionAlert('errors_verification', 'Error!', 'error');
+
+    
 ?>
 
 <div class="container-fluid bg-light py-5">
     <div class="col-md-6 m-auto text-center">
         <h1 class="h1">MY ACCOUNT</h1>
-        <button type="button" class="btn btn-secondary btnlogut" onclick="Redirecttologout()"> Log out </button>
+
+       
+           <?php if ($profileresult['verified'] == 1){
+            echo " <button type='button' class='btn btn-success btnverifys' data-userid='".$_SESSION['user_id']."' data-toggle='tooltip' data-placement='top' title='Already Verified'> Verified </button>";
+
+           }else{
+            echo "<button type='button' class='btn btn-danger btnverify ' data-userid='".$_SESSION['user_id']."'> Not Verified</button> ";
+            
+            
+           } ?> 
+
+        
+        
+       
+        <button type="button" class="btn btn-secondary btnlogut" onclick="Redirecttologout()"> Log out </button> 
     </div>
 </div>
 
@@ -57,19 +79,68 @@
                                     class="img-fluid rounded" 
                                     style="width: 80px; height: 80px;">
                                 <div class="ml-3 w-100">
+                                    <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="mb-1 text-dark font-weight-bold">
                                         <?php echo htmlspecialchars($order['product_name']); ?>
                                     </h6>
-                                    <p class="mb-1 text-muted smaller">
-                                        Size: <?php echo htmlspecialchars($order['shoe_size']); ?>
-                                    </p>
+
+                                    <span> <?php echo htmlspecialchars($order['status_name']); ?></span>
+                                    </div>
+                                    
                                     <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-1 text-muted smaller">
+                                        Size: <?php echo htmlspecialchars($order['shoe_size']); ?>
+                                        </p>
+                                        <span class="smallest">
+                                             <?php if ($order['payment_status'] == "COD"){
+                                                echo '(Cash on Delivery)';
+                                             }else{
+                                                echo '( Online Payment(Paypal) )';
+                                             }
+                                             ?>
+                                             
+                                            
+                                        </span>
+                                
+                                        
+                                    </div>
+                                    
+                                    <div class="d-flex align-items-center">
                                         <span class="text-success font-weight-bold">
                                             ₱ <?php echo number_format(($order['price'] * $order['shoe_quantity']), 2); ?>
                                         </span>
-                                        <span class="text-muted small">
+                                        <span class="ml-2 text-muted small ">
+                                            
                                             Quantity:  <?php echo htmlspecialchars($order['shoe_quantity']); ?>
+
+                                            
                                         </span>
+                                        <?php if ($order['order_status'] == 1){?>
+                                        
+                                        <div class="ml-auto p-2">
+                                            <?php if ($order['payment_status'] == "COD"){?>
+                                            <span class="h5 ">
+                                                <form action="includes/cancel.php"  method="POST">
+                                                    <input type="hidden" name="order_id" value="<?php echo $order['order_id'] ?>">
+                                                    <button class="span-cancel" name="cancel"> Cancel  </button>
+                                                </form>
+                                                    
+                                            </span>
+                                            <?php }else{ ?>
+                                                <span class="h5 ">
+                                                <form action="includes/cancel.php"  method="POST">
+                                                    <input type="hidden" name="order_id" value="<?php echo $order['order_id'] ?>">
+                                                    <input type="hidden" name="price" value="<?php echo $order['total_price'] ?>">
+                                                    
+                                                    <button class="span-cancel" name="cancel_paypal"> Cancel  </button>
+                                                </form>
+                                                    
+                                            </span>
+                                            <?php } ?>    
+                                        </div>
+                                        <?php } ?>
+                                        
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -99,9 +170,31 @@
 
 <script>
 
+document.addEventListener('DOMContentLoaded', () => {
+    // Listen for clicks on Not Verified buttons
+    document.querySelectorAll('.btnverify').forEach(button => {
+        button.addEventListener('click', function () {
+            // Get the user ID from the data attribute
+            const userId = this.getAttribute('data-userid');
+            
+            // Set the user ID in the modal
+            document.getElementById('userId').value = userId;
+            
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('verificationModal'));
+            modal.show();
+        });
+    });
+
+    
+});
+
+
 function Redirecttologout(){
     window.location.href = "includes/logout.inc.php";
 }
+
+
 </script>
 
 <?php include('includes/footer.php'); ?>
