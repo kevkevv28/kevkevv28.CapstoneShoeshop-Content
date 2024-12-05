@@ -28,7 +28,7 @@ try {
     $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
 
     $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
-    $mail->Username   = 'dljpsfootwearshop2@gmail.com';                     //SMTP username
+    $mail->Username   = '';                     //SMTP username
     $mail->Password   = '';                               //SMTP password
 
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;            //Enable implicit TLS encryption
